@@ -1,21 +1,23 @@
-function App() {
+import { AnimatePresence } from 'framer-motion'
+import { Route, Routes, useLocation } from 'react-router-dom'
+import HomeLayout from './layout/homeLayout'
+import Classes from './pages/classes'
+import Home from './pages/home'
+import Students from './pages/students'
+import Teachers from './pages/teachers'
+
+export default function App() {
+  const location = useLocation()
   return (
-    <div className='App'>
-      <header className='App-header'>
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className='App-link'
-          href='https://reactjs.org'
-          target='_blank'
-          rel='noopener noreferrer'
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <AnimatePresence exitBeforeEnter>
+      <HomeLayout>
+        <Routes location={location} key={location.pathname}>
+          <Route path='/' element={<Home />} />
+          <Route path='/students' element={<Students />} />
+          <Route path='/teachers' element={<Teachers />} />
+          <Route path='/classes' element={<Classes />} />
+        </Routes>
+      </HomeLayout>
+    </AnimatePresence>
   )
 }
-
-export default App
