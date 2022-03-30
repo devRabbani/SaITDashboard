@@ -18,7 +18,7 @@
 
 .mainContent {
   overflow-y: scroll;
-  padding: 40px 50px;
+  padding: 40px 50px 140px;
   padding-left: 330px;
   min-height: 100vh;
 }
@@ -128,28 +128,4 @@
   border: none;
   background-color: rgb(80, 80, 80);
   margin: 10px 0;
-}
-
-.mainContent .barChart,
-.ranking {
-  width: 90%;
-  border-radius: 9px;
-  margin: 15px 0 30px;
-  background-color: rgb(206, 214, 223);
-}
-
-.mainContent .ranking {
-  width: 70%;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-  height: auto;
-}
-
-.ranking .tCard {
-  height: 70px;
-  border-radius: 9px;
-  width: 100%;
-  background-color: #efefef;
 }

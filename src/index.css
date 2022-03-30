@@ -7,7 +7,6 @@
 html {
   height: 100%;
   overflow: hidden;
-  scroll-behavior: smooth;
 }
 
 #root {
@@ -20,7 +19,11 @@ html {
   width: 0;
   background: transparent;
 }
-
+button {
+  cursor: pointer;
+  background-color: transparent;
+  border: none;
+}
 :root {
   --primary-blue: #1a73e8;
   --input-color: #80868b;
@@ -38,6 +41,7 @@ body {
   -webkit-tap-highlight-color: transparent;
   height: 100%;
   overflow: auto;
+  scroll-behavior: smooth;
 }
 
 .wrapper {
