@@ -4,6 +4,8 @@ import { generateRanking } from '../../utils/firebase'
 import { motion } from 'framer-motion'
 import LoaderSvg from '../../components/loaderSvg'
 import './home.style.css'
+import Barchart from '../../components/barchart'
+import ReviewDetails from '../../components/reviewdetails'
 
 const deptList = {
   cse: 'Computer Science',
@@ -94,16 +96,21 @@ const rankCardVariants = {
   },
 }
 
-export default function Home() {
+export default function Home({
+  rankList,
+  setRankList,
+  classInfo,
+  setClassInfo,
+}) {
   useTitle('Home | SaITFeedbackAdmin')
   // States
-  const [classInfo, setClassInfo] = useState({
-    branch: '',
-    sem: '',
-  })
+  // const [classInfo, setClassInfo] = useState({
+  //   branch: '',
+  //   sem: '',
+  // })
   const { branch, sem } = classInfo
   const [isLoading, setIsLoading] = useState(false)
-  const [rankList, setRankList] = useState([])
+  // const [rankList, setRankList] = useState([])
   const [isNoData, setIsNoData] = useState(false)
   const scrollRef = useRef()
 
@@ -132,6 +139,15 @@ export default function Home() {
       ...prev,
       [name]: value,
     }))
+  }
+
+  //Clearing Data
+  const handleClear = () => {
+    setRankList([])
+    setClassInfo({
+      branch: '',
+      sem: '',
+    })
   }
 
   return (
@@ -180,8 +196,19 @@ export default function Home() {
             className={isLoading ? 'loading' : ''}
             type='submit'
           >
-            {isLoading ? <LoaderSvg /> : 'Generate'}
+            {isLoading ? (
+              <LoaderSvg />
+            ) : rankList.length > 0 ? (
+              'Refresh'
+            ) : (
+              'Generate'
+            )}
           </button>
+          {rankList.length > 0 && (
+            <button onClick={handleClear} className='clear'>
+              Clear
+            </button>
+          )}
         </form>
         {isNoData && <p className='noData'>No Data Found</p>}
         {rankList.length > 0 && (
@@ -210,16 +237,17 @@ export default function Home() {
                 </motion.div>
               ))}
             </motion.div>
+            <hr />
+            <h3 className='rankingH3'>Bar Chart</h3>
+            <div className='barChart'>
+              <Barchart data={rankList} />
+            </div>
+            <hr />
+            <h3 className='rankingH3'>Review Details</h3>
+            <ReviewDetails classInfo={classInfo} rankList={rankList} />
           </>
         )}
       </div>
-      {rankList.length > 0 && (
-        <>
-          <hr />
-          <h2>Bar Chart</h2>
-          <div className='barChart'></div>
-        </>
-      )}
     </motion.div>
   )
 }
