@@ -6,6 +6,8 @@ import LoaderSvg from '../../components/loaderSvg'
 import './home.style.css'
 import Barchart from '../../components/barchart'
 import ReviewDetails from '../../components/reviewdetails'
+import GetNotComplete from '../../components/getNotComplete'
+import SendReports from '../../components/sendReports'
 
 const deptList = {
   cse: 'Computer Science',
@@ -158,13 +160,7 @@ export default function Home({
       exit='exit'
     >
       <h1 className='adminHeadline'>Home</h1>
-      <p className='intro'>
-        Here all classes review can be found and these are based on individual
-        subject and semester .Simply select the branch and semester for
-        generating the review.
-      </p>
-      <hr />
-      <h2 ref={scrollRef}>Generate Review</h2>
+      <h2 className='generateH2'>Generate Review</h2>
       <div className='generateDiv'>
         <p>Select Department and Semester</p>
         <form onSubmit={handleGenerate}>
@@ -211,12 +207,16 @@ export default function Home({
           )}
         </form>
         {isNoData && <p className='noData'>No Data Found</p>}
+
         {rankList.length > 0 && (
           <>
+            <div ref={scrollRef}></div>
             <div className='rankBoardDetails'>
               Rankings Generated for Semester :<span> {sem}</span> , Branch :
               <span> {deptList[branch]}</span>
             </div>
+
+            <ReviewDetails classInfo={classInfo} rankList={rankList} />
             <h3 className='rankingH3'>Rankings</h3>
             <motion.div variants={rankBoardVariants} className='rankBoardDiv'>
               {rankList.map((item, i) => (
@@ -243,8 +243,11 @@ export default function Home({
               <Barchart data={rankList} />
             </div>
             <hr />
-            <h3 className='rankingH3'>Review Details</h3>
-            <ReviewDetails classInfo={classInfo} rankList={rankList} />
+            <h2 className='rankingH2'>Get Review Details</h2>
+            <GetNotComplete classInfo={classInfo} />
+            <hr />
+            <h2 className='rankingH2'>Send and Save the Report</h2>
+            <SendReports />
           </>
         )}
       </div>

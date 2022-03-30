@@ -37,15 +37,6 @@
 .reviewCard:nth-child(3) p.numbers {
   color: red;
 }
-
-.reviewHeaderP {
-  font-size: 1.3rem;
-}
-.reviewHeaderP span {
-  font-weight: 500;
-  color: blue;
-}
-
 p.reviewLoading {
   margin-top: 29px;
   font-size: 1.5rem;
