@@ -43,6 +43,12 @@
   transition: all 0.3s;
 }
 
+.generateDiv form button.clear {
+  background-color: rgb(185, 22, 22);
+  width: 100px;
+  border-bottom-color: rgb(39, 39, 39);
+}
+
 .generateDiv form button svg {
   width: 25px;
   height: 25px;
@@ -61,15 +67,25 @@
   transform: scale(0.97);
 }
 
+.generateDiv form button.clear:hover {
+  background-color: rgb(156, 12, 12);
+}
+.generateDiv form button.clear:active {
+  border-color: rgb(109, 109, 109);
+  transform: scale(0.97);
+}
+
 .rankBoardDetails {
   background-color: cornflowerblue;
   font-size: 1.1rem;
   line-height: 24px;
-  padding: 20px;
+  padding: 20px 35px;
   margin: 25px 0 20px;
   box-shadow: 5px 5px 18px -3px rgba(0, 0, 0, 0.3);
   width: 60%;
   text-align: center;
+  min-width: fit-content;
+  white-space: nowrap;
 }
 
 .rankBoardDetails span {
@@ -94,22 +110,24 @@ p.noData {
 .rankBoardDiv {
   background-color: rgb(206, 214, 223);
   padding: 40px 45px;
-  margin: 10px 0;
+  margin: 10px 0 25px;
   border-radius: 7px;
   display: flex;
   flex-direction: column;
   gap: 16px;
   width: 60%;
+  min-width: fit-content;
   border: 1px solid #a2a2a2;
 }
 
 .rankBoardDiv .rankCard {
   background-color: whitesmoke;
-  padding: 13px 30px 13px 57px;
+  padding: 13px 110px 13px 57px;
   box-shadow: 2px 3px 18px -5px rgba(0, 0, 0, 0.281);
   position: relative;
   border-radius: 4px;
   cursor: pointer;
+  min-width: fit-content;
   /* border-left: 4px solid var(--secondary-purple); */
   /* border-top: 4px solid var(--secondary-purple); */
 }
@@ -123,6 +141,7 @@ p.noData {
 
 .rankCard .subjects {
   font-size: 0.9rem;
+  white-space: nowrap;
 }
 
 .rankCard .point {
@@ -177,4 +196,20 @@ p.noData {
 .rankCard:nth-child(3) .rankNo {
   background-color: #cbb893;
   left: 11px;
+}
+
+.mainContent .barChart {
+  width: 80%;
+  border-radius: 9px;
+  margin: 15px 0 30px;
+  background-color: rgb(206, 214, 223);
+  padding: 28px;
+  min-width: 700px;
+}
+
+.chartBg {
+  background-color: whitesmoke;
+  height: 100%;
+  width: 100%;
+  box-shadow: 2px 3px 18px -5px rgba(0, 0, 0, 0.281);
 }

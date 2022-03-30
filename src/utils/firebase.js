@@ -29,3 +29,23 @@ export const generateRanking = async (branch, sem) => {
     return []
   }
 }
+
+export const countCompleted = async (branch, sem) => {
+  const completeQuery = query(
+    collection(db, 'students'),
+    where('branch', '==', branch),
+    where('sem', '==', sem),
+    where('status', '==', true)
+  )
+  const incompleteQuery = query(
+    collection(db, 'students'),
+    where('branch', '==', branch),
+    where('sem', '==', sem),
+    where('status', '==', false)
+  )
+  const completeSnap = await getDocs(completeQuery)
+  const incompleteSnap = await getDocs(incompleteQuery)
+  const given = completeSnap.size
+  const notgiven = incompleteSnap.size
+  return { given, notgiven }
+}
