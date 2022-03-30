@@ -1,6 +1,23 @@
+.rankingH2 {
+  margin: 25px 0 15px;
+}
+.rankingH2::after {
+  content: '';
+  width: 150px;
+  height: 2px;
+  background-color: #4f15ac;
+  display: block;
+  border: none;
+  margin: 7px 0 40px 8px;
+}
+
 .generateDiv {
   padding: 20px 0 30px;
   /* background-color: rgb(175, 175, 223); */
+}
+
+.generateH2 {
+  margin-top: 10px;
 }
 
 .generateDiv p {

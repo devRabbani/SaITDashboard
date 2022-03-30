@@ -49,3 +49,20 @@ export const countCompleted = async (branch, sem) => {
   const notgiven = incompleteSnap.size
   return { given, notgiven }
 }
+
+export const getNotCompList = async (branch, sem) => {
+  const q = query(
+    collection(db, 'students'),
+    where('branch', '==', branch),
+    where('sem', '==', sem),
+    where('status', '==', false),
+    orderBy('usn')
+  )
+  const snapshot = await getDocs(q)
+  if (!snapshot.empty) {
+    const data = snapshot.docs.map((item) => item.data())
+    return data
+  } else {
+    return []
+  }
+}
