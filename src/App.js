@@ -9,7 +9,6 @@ import { ProfileContext, useProfile } from './context/ProfileContext'
 import useAuth from './hooks/useAuth'
 import HomeLayout from './layout/homeLayout'
 import Classes from './pages/classes'
-import Feedback from './pages/feedback'
 import Home from './pages/home'
 import Students from './pages/students'
 import Teachers from './pages/teachers'
@@ -69,7 +68,6 @@ export default function App() {
                     }
                   />
                   <Route path='/students' element={<Students />} />
-                  <Route path='/feedback' element={<Feedback />} />
                   <Route path='/teachers' element={<Teachers />} />
                   <Route path='/classes' element={<Classes />} />
                 </Route>

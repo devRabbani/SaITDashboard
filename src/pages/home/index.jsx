@@ -97,7 +97,7 @@ export default function Home({
   const handleGenerate = async (e) => {
     setIsLoading(true)
     e.preventDefault()
-    const data = await generateRanking(branch, sem)
+    const data = await generateRanking(branch, parseInt(sem))
     if (data.length) {
       setIsLoading(false)
       setIsNoData(false)

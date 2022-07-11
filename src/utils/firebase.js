@@ -23,9 +23,9 @@ export const generateRanking = async (branch, sem) => {
     orderBy('avgRating', 'desc')
   )
   const snapshot = await getDocs(q)
+  console.log(branch, typeof sem, snapshot)
   if (!snapshot.empty) {
-    const data = snapshot.docs.map((item) => item.data())
-    return data
+    return snapshot.docs.map((item) => item.data())
   } else {
     return []
   }
