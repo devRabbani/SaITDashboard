@@ -39,7 +39,7 @@ const reviewCardVariants = {
   },
 }
 
-export default function ReviewDetails({ classInfo, rankList }) {
+export default function ReviewDetails({ classInfo, total }) {
   const [completed, setCompleted] = useState({
     given: 0,
     notgiven: 0,
@@ -49,7 +49,7 @@ export default function ReviewDetails({ classInfo, rankList }) {
     try {
       const { given, notgiven } = await countCompleted(
         classInfo.branch,
-        classInfo.sem
+        parseInt(classInfo.sem)
       )
       setIsLoading(false)
       setCompleted({ given, notgiven })
@@ -59,15 +59,9 @@ export default function ReviewDetails({ classInfo, rankList }) {
     }
   }
 
-  // Total Calculating
-  let total = 0
-  rankList.forEach((item) => {
-    total += item.total
-  })
-
   useEffect(() => {
     fetchData()
-  }, [classInfo, rankList])
+  }, [classInfo, total])
 
   return (
     <>

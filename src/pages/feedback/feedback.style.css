@@ -1,0 +1,36 @@
+form.feedback > * {
+  font-size: 1rem;
+  outline: none;
+  padding: 7px 10px;
+  border-radius: 4px;
+}
+form.feedback select {
+  width: 200px;
+  cursor: pointer;
+  color: var(--secondary-blue);
+  border: 1px solid var(--secondary-blue);
+  background-color: transparent;
+}
+form.feedback option {
+  color: rgb(32, 32, 32);
+  background-color: rgb(206, 206, 235);
+  margin: 8px;
+}
+
+form.feedback button {
+  width: 200px;
+  border-bottom: 2.5px solid rgb(6, 6, 146);
+  background-color: var(--secondary-blue);
+  color: whitesmoke;
+  padding: 0;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+form.feedback button:hover {
+  background-color: #1536ac;
+}
+form.feedback button:active {
+  border-color: #1536ac;
+  transform: scale(0.97);
+}

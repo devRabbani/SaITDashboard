@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react'
 import useTitle from '../../hooks/useTitle'
-import { generateRanking } from '../../utils/firebase'
+import { clearAndCreate, generateRanking } from '../../utils/firebase'
 import { motion } from 'framer-motion'
 import LoaderSvg from '../../components/loaderSvg'
 import './home.style.css'
@@ -8,40 +8,14 @@ import Barchart from '../../components/barchart'
 import ReviewDetails from '../../components/reviewdetails'
 import GetNotComplete from '../../components/getNotComplete'
 import SendReports from '../../components/sendReports'
-
-const deptList = {
-  cse: 'Computer Science',
-  is: 'Information Science',
-  me: 'Mechanical Engineering',
-  ece: 'Electronics And Communication',
-  civil: 'Civil Engineering',
-}
-
-const branchSelect = [
-  { value: '', name: 'Select Branch' },
-  { value: 'bs', name: 'BASIC' },
-  { value: 'cse', name: 'CSE' },
-  { value: 'is', name: 'IS' },
-  { value: 'me', name: 'ME' },
-  { value: 'ece', name: 'ECE' },
-  { value: 'civil', name: 'CIVIL' },
-]
-
-const semSelect = [
-  { value: '', name: 'Select Semester' },
-  { value: '3', name: '3rd Sem' },
-  { value: '4', name: '4th Sem' },
-  { value: '5', name: '5th Sem' },
-  { value: '6', name: '6th Sem' },
-  { value: '7', name: '7th Sem' },
-  { value: '8', name: '8th Sem' },
-]
-
-const basicSelect = [
-  { value: '', name: 'Select Semester' },
-  { value: '1', name: '1st Sem' },
-  { value: '2', name: '2nd Sem' },
-]
+import { useProfile } from '../../context/ProfileContext'
+import {
+  basicSelect,
+  branchSelect,
+  deptList,
+  semSelect,
+} from '../../utils/deptData'
+import { toast } from 'react-hot-toast'
 
 const wrapperVariants = {
   hidden: {
@@ -110,8 +84,11 @@ export default function Home({
   //   branch: '',
   //   sem: '',
   // })
+  const { data } = useProfile()
   const { branch, sem } = classInfo
+  const masterRole = data?.branch === 'master'
   const [isLoading, setIsLoading] = useState(false)
+  const [clearLoading, setClearLoading] = useState(false)
   // const [rankList, setRankList] = useState([])
   const [isNoData, setIsNoData] = useState(false)
   const scrollRef = useRef()
@@ -144,13 +121,44 @@ export default function Home({
   }
 
   //Clearing Data
-  const handleClear = () => {
-    setRankList([])
-    setClassInfo({
-      branch: '',
-      sem: '',
-    })
+  const handleClear = async (e) => {
+    e.preventDefault()
+    if (!branch || !sem) return
+    setClearLoading(true)
+    const sure = window.confirm(
+      'Are you sure want to clear previous data and create new feedbacks?'
+    )
+    if (sure) {
+      const toastId = toast.loading('Clearning Previous Data')
+      try {
+        await clearAndCreate(branch, parseInt(sem))
+        toast.success(
+          'Data cleared and Ready to collect new feedback for branch ' +
+            branch +
+            ' sem ' +
+            sem,
+          {
+            id: toastId,
+          }
+        )
+        setRankList([])
+        setClassInfo((prev) => ({
+          ...prev,
+          sem: '',
+        }))
+      } catch (error) {
+        toast.error('Something went wrong, Try Again!', { id: toastId })
+        console.log(error)
+      }
+    }
+    setClearLoading(false)
   }
+
+  // Total Calculating
+  let total = 0
+  rankList.forEach((item) => {
+    total += item.total
+  })
 
   return (
     <motion.div
@@ -162,15 +170,25 @@ export default function Home({
       <h1 className='adminHeadline'>Home</h1>
       <h2 className='generateH2'>Generate Review</h2>
       <div className='generateDiv'>
-        <p>Select Department and Semester</p>
+        <p>
+          {masterRole ? 'Select Department and Semester' : 'Select Semester'}
+        </p>
         <form onSubmit={handleGenerate}>
-          <select required name='branch' value={branch} onChange={handleChange}>
-            {branchSelect.map((branch, i) => (
-              <option key={i} value={branch.value}>
-                {branch.name}
-              </option>
-            ))}
-          </select>
+          {masterRole && (
+            <select
+              required
+              name='branch'
+              value={branch}
+              onChange={handleChange}
+            >
+              {branchSelect.map((branch, i) => (
+                <option key={i} value={branch.value}>
+                  {branch.name}
+                </option>
+              ))}
+            </select>
+          )}
+
           {branch && (
             <select required name='sem' value={sem} onChange={handleChange}>
               {!(branch === 'bs')
@@ -200,9 +218,13 @@ export default function Home({
               'Generate'
             )}
           </button>
-          {rankList.length > 0 && (
-            <button onClick={handleClear} className='clear'>
-              Clear
+          {branch && sem && (
+            <button
+              disabled={clearLoading}
+              onClick={handleClear}
+              className='clear'
+            >
+              {clearLoading ? 'Please wait' : 'Clear and Create New Feedbacks'}
             </button>
           )}
         </form>
@@ -215,39 +237,47 @@ export default function Home({
               Rankings Generated for Semester :<span> {sem}</span> , Branch :
               <span> {deptList[branch]}</span>
             </div>
-
-            <ReviewDetails classInfo={classInfo} rankList={rankList} />
-            <h3 className='rankingH3'>Rankings</h3>
-            <motion.div variants={rankBoardVariants} className='rankBoardDiv'>
-              {rankList.map((item, i) => (
+            {total ? (
+              <>
+                <ReviewDetails total={total} classInfo={classInfo} />
+                <h3 className='rankingH3'>Rankings</h3>
                 <motion.div
-                  variants={rankCardVariants}
-                  key={i}
-                  className='rankCard'
+                  variants={rankBoardVariants}
+                  className='rankBoardDiv'
                 >
-                  <div className='rankNo'>{i + 1}</div>
-                  <p className='teacherName'>{item.teacherName}</p>
-                  <p className='subjects'>
-                    {item.subfull} ,
-                    <span className='subCode'> {item.subcode}</span>
-                  </p>
-                  <p className='point'>
-                    {Math.round((item.avgRating / 35) * 100)}%
-                  </p>
+                  {rankList.map((item, i) => (
+                    <motion.div
+                      variants={rankCardVariants}
+                      key={i}
+                      className='rankCard'
+                    >
+                      <div className='rankNo'>{i + 1}</div>
+                      <p className='teacherName'>{item.teacherName}</p>
+                      <p className='subjects'>
+                        {item.subfull} ,
+                        <span className='subCode'> {item.subcode}</span>
+                      </p>
+                      <p className='point'>
+                        {Math.round((item.avgRating / 35) * 100)}%
+                      </p>
+                    </motion.div>
+                  ))}
                 </motion.div>
-              ))}
-            </motion.div>
-            <hr />
-            <h3 className='rankingH3'>Bar Chart</h3>
-            <div className='barChart'>
-              <Barchart data={rankList} />
-            </div>
-            <hr />
-            <h2 className='rankingH2'>Get Review Details</h2>
-            <GetNotComplete classInfo={classInfo} />
-            <hr />
-            <h2 className='rankingH2'>Send and Save the Report</h2>
-            <SendReports />
+                <hr />
+                <h3 className='rankingH3'>Bar Chart</h3>
+                <div className='barChart'>
+                  <Barchart data={rankList} />
+                </div>
+                <hr />
+                <h2 className='rankingH2'>Get Review Details</h2>
+                <GetNotComplete classInfo={classInfo} />
+                <hr />
+                <h2 className='rankingH2'>Send and Save the Report</h2>
+                <SendReports />
+              </>
+            ) : (
+              <p className='noReviewGot'>Not Any Review Data Collected</p>
+            )}
           </>
         )}
       </div>

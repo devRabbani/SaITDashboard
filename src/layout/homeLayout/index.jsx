@@ -1,15 +1,27 @@
-import { NavLink, useNavigate } from 'react-router-dom'
+import { Link, NavLink, useNavigate } from 'react-router-dom'
 import {
   FaHome,
   FaUserGraduate,
   FaUserTie,
   FaBook,
   FaSignOutAlt,
+  FaSignInAlt,
+  FaStar,
 } from 'react-icons/fa'
 import './homeLayout.style.css'
+import { signOut } from 'firebase/auth'
+import { auth } from '../../lib/firebase'
+import { toast } from 'react-hot-toast'
+import { useProfile } from '../../context/ProfileContext'
 
-export default function HomeLayout({ children }) {
+export default function HomeLayout({ children, user }) {
   const navigate = useNavigate()
+  const { data } = useProfile()
+  const handleSignout = () => {
+    signOut(auth)
+      .then(() => toast.success('Signed Out Successfull'))
+      .catch(() => toast.error('Signout failed'))
+  }
   return (
     <div className='admin'>
       <div className='adminGrid'>
@@ -21,7 +33,6 @@ export default function HomeLayout({ children }) {
             <NavLink to='' end={true}>
               <FaHome /> Home
             </NavLink>
-
             <NavLink to='students' end={true}>
               <FaUserGraduate />
               Students
@@ -36,12 +47,17 @@ export default function HomeLayout({ children }) {
               <FaBook /> Classes
             </NavLink>
           </div>
+          {user && <p className='userName'>{data?.name || 'Admin'}</p>}
           <div className='logOutDiv'>
-            <button
-              onClick={() => navigate('https://saitfeedback.netlify.app')}
-            >
-              Logout <FaSignOutAlt />
-            </button>
+            {user ? (
+              <button onClick={handleSignout}>
+                Logout <FaSignOutAlt />
+              </button>
+            ) : (
+              <Link to='/login'>
+                Login <FaSignInAlt />
+              </Link>
+            )}
           </div>
         </div>
         <div className='mainContent'>{children}</div>

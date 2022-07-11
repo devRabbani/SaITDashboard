@@ -14,6 +14,7 @@
   flex-direction: column;
   position: fixed;
   width: 270px;
+  justify-content: flex-end;
 }
 
 .mainContent {
@@ -41,12 +42,13 @@
   margin-top: 35px;
   display: flex;
   flex-direction: column;
+  margin-bottom: auto;
 }
 .menuItemsWrapper a {
   padding: 15px 20px;
   font-weight: 500;
   display: flex;
-  align-items: center;
+  /* align-items: center; */
   gap: 7px;
   /* border-bottom: 1px solid rgb(221, 221, 221); */
   transition: all 0.3s;
@@ -66,15 +68,25 @@
   border-right: 3px solid #330cd6;
   color: #330cd6;
 }
-
+.userName {
+  background-color: #5dcfcfc4;
+  color: #247c7c;
+  text-align: center;
+  width: 95%;
+  margin: 0 auto 15px;
+  padding: 17px 8px;
+  border-radius: 7px;
+  font-size: 1rem;
+  font-weight: 600;
+}
 .logOutDiv {
   border-top: 1px solid #afb0b3;
-  margin-top: auto;
   margin-bottom: 7px;
   padding: 10px 15px;
 }
 
-.logOutDiv button {
+.logOutDiv button,
+.logOutDiv a {
   border: none;
   padding: 11px 10px;
   display: flex;
@@ -89,7 +101,8 @@
   border-radius: 40px;
 }
 
-.logOutDiv button:hover {
+.logOutDiv button:hover,
+.logOutDiv a:hover {
   border-color: rgb(172, 172, 172);
   letter-spacing: 0.7px;
 }

@@ -24,16 +24,17 @@
   font-weight: 500;
   color: var(--gray-1);
 }
-.generateDiv form {
+.generateDiv form,
+form.feedback {
   display: flex;
   gap: 10px;
   margin-top: 15px;
 }
 .generateDiv form > * {
-  font-size: 1rem;
+  font-size: 1.1rem;
   outline: none;
   border: none;
-  padding: 7px 10px;
+  padding: 8px 11px;
   border-radius: 4px;
 }
 .generateDiv form select {
@@ -62,7 +63,7 @@
 
 .generateDiv form button.clear {
   background-color: rgb(185, 22, 22);
-  width: 100px;
+  width: 320px;
   border-bottom-color: rgb(39, 39, 39);
 }
 
@@ -229,4 +230,9 @@ p.noData {
   height: 100%;
   width: 100%;
   box-shadow: 2px 3px 18px -5px rgba(0, 0, 0, 0.281);
+}
+
+.noReviewGot {
+  font-size: 2rem;
+  margin-top: 40px;
 }
