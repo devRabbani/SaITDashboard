@@ -98,6 +98,7 @@ export default function Home({
     setIsLoading(true)
     e.preventDefault()
     const data = await generateRanking(branch, parseInt(sem))
+    console.log(data)
     if (data.length) {
       setIsLoading(false)
       setIsNoData(false)
@@ -258,7 +259,7 @@ export default function Home({
                         <span className='subCode'> {item.subcode}</span>
                       </p>
                       <p className='point'>
-                        {Math.round((item.avgRating / 35) * 100)}%
+                        {Math.round((item.avgRating / 50) * 100)}%
                       </p>
                     </motion.div>
                   ))}
