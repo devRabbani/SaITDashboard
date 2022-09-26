@@ -10,21 +10,22 @@ import {
   setDoc,
   updateDoc,
   where,
+  writeBatch,
 } from 'firebase/firestore'
 import { db } from '../lib/firebase'
 
 // Generate Rankings
 export const generateRanking = async (branch, sem) => {
   const q = query(
-    collectionGroup(db, 'subs'),
+    collection(db, 'teachers'),
     where('branch', '==', branch),
     where('sem', '==', sem),
     orderBy('avgRating', 'desc')
   )
   const snapshot = await getDocs(q)
+  console.log(branch, typeof sem, snapshot)
   if (!snapshot.empty) {
-    const data = snapshot.docs.map((item) => item.data())
-    return data
+    return snapshot.docs.map((item) => item.data())
   } else {
     return []
   }
@@ -65,4 +66,46 @@ export const getNotCompList = async (branch, sem) => {
   } else {
     return []
   }
+}
+
+export const getProfile = async (uid) => {
+  const snapshot = await getDoc(doc(db, 'admins/' + uid))
+  console.log('run fromserver')
+  if (snapshot.exists()) {
+    return snapshot.data()
+  } else {
+    return null
+  }
+}
+
+export const clearAndCreate = async (branch, sem) => {
+  const batch = writeBatch(db)
+
+  const teacherQ = query(
+    collection(db, 'teachers'),
+    where('branch', '==', branch),
+    where('sem', '==', sem),
+    where('total', '>', 0)
+  )
+  const studentQ = query(
+    collection(db, 'students'),
+    where('branch', '==', branch),
+    where('sem', '==', sem)
+  )
+
+  const teacherSnapshot = await getDocs(teacherQ)
+  const studentSnapshot = await getDocs(studentQ)
+
+  if (!teacherSnapshot.empty) {
+    teacherSnapshot.docs.map((item) =>
+      batch.update(item.ref, { avgRating: 0, total: 0 })
+    )
+  }
+  console.log(studentSnapshot.docs.length, branch, sem)
+  if (!studentSnapshot.empty) {
+    studentSnapshot.docs.map((item) =>
+      batch.update(item.ref, { complete: [], status: false })
+    )
+  }
+  batch.commit()
 }

@@ -7,7 +7,7 @@ export default function Barchart({ data }) {
     labels: data.map((item) => item.teacherName),
     datasets: [
       {
-        label: 'Average Rating out of 37',
+        label: 'Average Rating out of 50',
         data: data.map((item) => item.avgRating),
         backgroundColor: [
           'rgba(255, 99, 132, 0.4)',
