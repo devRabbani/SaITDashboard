@@ -10,7 +10,11 @@ export default function GetNotComplete({ classInfo }) {
   const handleClick = async () => {
     setIsLoading(true)
     try {
-      const result = await getNotCompList(classInfo.branch, classInfo.sem)
+      const result = await getNotCompList(
+        classInfo.branch,
+        parseInt(classInfo.sem)
+      )
+
       setData(result)
       setIsLoading(false)
       if (result.length === 0) {
@@ -26,8 +30,8 @@ export default function GetNotComplete({ classInfo }) {
     setData([])
   }
   return (
-    <div className='notCompleteWrapper'>
-      <div className='btnWrapper'>
+    <div className="notCompleteWrapper">
+      <div className="btnWrapper">
         <p>Get the students list who didnot complete feedback</p>
         <button onClick={handleClick}>
           {isLoading
@@ -37,13 +41,13 @@ export default function GetNotComplete({ classInfo }) {
             : 'Get Students'}
         </button>
         {data.length > 0 && (
-          <button onClick={handleClear} className='clear'>
+          <button onClick={handleClear} className="clear">
             Clear
           </button>
         )}
       </div>
       {data.length > 0 && (
-        <div className='tableWrapper'>
+        <div className="tableWrapper">
           <table>
             <thead>
               <tr>
@@ -64,7 +68,7 @@ export default function GetNotComplete({ classInfo }) {
           </table>
         </div>
       )}
-      {isEmpty && <p className='noLeft'>No students left for Feedback</p>}
+      {isEmpty && <p className="noLeft">No students left for Feedback</p>}
     </div>
   )
 }

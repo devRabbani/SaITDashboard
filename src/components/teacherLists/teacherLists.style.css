@@ -1,0 +1,51 @@
+.teacherLists {
+  margin: 30px 0 40px;
+}
+
+.teacherLists table {
+  font-family: Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.teacherLists td,
+.teacherLists th {
+  border: 1px solid #ddd;
+  padding: 8px 10px;
+}
+
+.teacherLists tr:nth-child(even) {
+  background-color: #ece6e6;
+}
+
+.teacherLists tr:hover {
+  background-color: rgb(208, 205, 248);
+}
+.teacherLists td:nth-child(3) {
+  text-transform: uppercase;
+}
+.teacherLists td:nth-child(1),
+.teacherLists td:nth-child(4),
+.teacherLists td:nth-child(7),
+.teacherLists td:nth-child(6),
+.teacherLists td:nth-child(3) {
+  text-align: center;
+}
+
+.teacherLists th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: center;
+  background-color: #6824b0;
+  color: white;
+}
+
+.teacherLists th:not(:nth-child(1), :nth-child(7)) {
+  min-width: 100px;
+  position: relative;
+}
+.teacherLists .iconSort {
+  position: absolute;
+  right: 10px;
+  top: 13px;
+}

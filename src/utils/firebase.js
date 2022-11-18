@@ -23,7 +23,7 @@ export const generateRanking = async (branch, sem) => {
     orderBy('avgRating', 'desc')
   )
   const snapshot = await getDocs(q)
-  console.log(branch, typeof sem, snapshot)
+
   if (!snapshot.empty) {
     return snapshot.docs.map((item) => item.data())
   } else {
@@ -108,4 +108,12 @@ export const clearAndCreate = async (branch, sem) => {
     )
   }
   batch.commit()
+}
+
+export const getDBData = async (ref) => {
+  const q = collection(db, ref)
+  const snapshot = await getDocs(q)
+  if (!snapshot.empty) {
+    return snapshot.docs.map((item) => ({ ...item.data(), id: item.id }))
+  }
 }

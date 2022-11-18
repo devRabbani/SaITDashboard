@@ -5,6 +5,7 @@ import { toast } from 'react-hot-toast'
 import './login.style.css'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useEffect } from 'react'
+import { useRef } from 'react'
 
 export default function Login({ user }) {
   const location = useLocation()
@@ -16,52 +17,64 @@ export default function Login({ user }) {
   const [password, setPassword] = useState('')
   const [isLoading, setIsLoading] = useState(false)
 
-  const handleSubmit = (e) => {
+  // Cancel Ref
+  const isCancel = useRef()
+  isCancel.current = false
+
+  const handleSubmit = async (e) => {
     e.preventDefault()
     setIsLoading(true)
-    const toastId = toast.loading('Signing In Please Wait')
-    signInWithEmailAndPassword(
-      auth,
-      email.trim().toLowerCase(),
-      password.trim()
-    )
-      .then((res) => {
-        toast.success('Signin Successfull', { id: toastId })
-        setIsLoading(false)
-        navigate(redirPath, { replace: true })
+    const toastId = toast.loading(<b>Signing In Please Wait</b>)
+    try {
+      const res = await signInWithEmailAndPassword(
+        auth,
+        email.trim().toLowerCase(),
+        password.trim()
+      )
+      if (res.user) {
+        toast.success(<b>Signin Successfull</b>, { id: toastId })
+        if (!isCancel.current) {
+          navigate(redirPath, { replace: true })
+          setIsLoading(false)
+        }
+      } else {
+        throw new Error('Something went wrong try again')
+      }
+    } catch (error) {
+      toast.error(<b>{error.message}</b>, {
+        id: toastId,
       })
-      .catch((err) => {
-        toast.error('Email or Password is Wrong, Try Again!', {
-          id: toastId,
-        })
+      console.log(error.message)
+      if (!isCancel.current) {
         setIsLoading(false)
-        console.log(err.message, err?.code)
-      })
+      }
+    }
   }
 
   useEffect(() => {
-    if (!isLoading && user) {
+    if (!isLoading && user && !isCancel) {
       navigate('/')
     }
+    return () => (isCancel.current = true)
   }, [])
 
   return (
-    <div className='loginWrapper'>
+    <div className="loginWrapper">
       <form onSubmit={handleSubmit}>
         <h1>Login</h1>
         <input
           required
-          type='email'
-          name='email'
-          placeholder='Enter your email'
+          type="email"
+          name="email"
+          placeholder="Enter your email"
           onChange={(e) => setEmail(e.target.value)}
         />
         <input
           required
-          type='password'
-          name='password'
+          type="password"
+          name="password"
           minLength={6}
-          placeholder='Enter your password'
+          placeholder="Enter your password"
           onChange={(e) => setPassword(e.target.value)}
         />
         <button disabled={isLoading}>{isLoading ? 'Loading' : 'Signin'}</button>

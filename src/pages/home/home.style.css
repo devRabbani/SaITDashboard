@@ -57,8 +57,6 @@ form.feedback {
   color: whitesmoke;
   width: 160px;
   padding: 0;
-  cursor: pointer;
-  transition: all 0.3s;
 }
 
 .generateDiv form button.clear {

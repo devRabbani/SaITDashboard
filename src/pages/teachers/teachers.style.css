@@ -1,0 +1,25 @@
+.teacherAddUpdate {
+  margin-top: 20px;
+}
+
+.teacherAddUpdate form {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: min(80%, 800px);
+}
+
+.teacherAddUpdate .formDiv {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.teacherAddUpdate .formDiv input,
+.teacherAddUpdate .formDiv select {
+  flex: 1 0 0;
+}
+
+.teacherAddUpdate .btnDiv button {
+  margin-right: 10px;
+}
