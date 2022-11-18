@@ -125,6 +125,7 @@ export default function Home({
   const handleClear = async (e) => {
     e.preventDefault()
     if (!branch || !sem) return
+    setIsNoData(false)
     setClearLoading(true)
     const sure = window.confirm(
       'Are you sure want to clear previous data and create new feedbacks?'
@@ -164,13 +165,13 @@ export default function Home({
   return (
     <motion.div
       variants={wrapperVariants}
-      initial='hidden'
-      animate='visible'
-      exit='exit'
+      initial="hidden"
+      animate="visible"
+      exit="exit"
     >
-      <h1 className='adminHeadline'>Home</h1>
-      <h2 className='generateH2'>Generate Review</h2>
-      <div className='generateDiv'>
+      <h1 className="adminHeadline">Home</h1>
+      <h2 className="generateH2">Generate Review</h2>
+      <div className="generateDiv">
         <p>
           {masterRole ? 'Select Department and Semester' : 'Select Semester'}
         </p>
@@ -178,7 +179,7 @@ export default function Home({
           {masterRole && (
             <select
               required
-              name='branch'
+              name="branch"
               value={branch}
               onChange={handleChange}
             >
@@ -191,7 +192,7 @@ export default function Home({
           )}
 
           {branch && (
-            <select required name='sem' value={sem} onChange={handleChange}>
+            <select required name="sem" value={sem} onChange={handleChange}>
               {!(branch === 'bs')
                 ? semSelect.map((semItem, i) => (
                     <option value={semItem.value} key={i}>
@@ -209,7 +210,7 @@ export default function Home({
           <button
             disabled={isLoading}
             className={isLoading ? 'loading' : ''}
-            type='submit'
+            type="submit"
           >
             {isLoading ? (
               <LoaderSvg />
@@ -223,61 +224,61 @@ export default function Home({
             <button
               disabled={clearLoading}
               onClick={handleClear}
-              className='clear'
+              className="clear"
             >
               {clearLoading ? 'Please wait' : 'Clear and Create New Feedbacks'}
             </button>
           )}
         </form>
-        {isNoData && <p className='noData'>No Data Found</p>}
+        {isNoData && <p className="noData">No Data Found</p>}
 
         {rankList.length > 0 && (
           <>
             <div ref={scrollRef}></div>
-            <div className='rankBoardDetails'>
+            <div className="rankBoardDetails">
               Rankings Generated for Semester :<span> {sem}</span> , Branch :
               <span> {deptList[branch]}</span>
             </div>
             {total ? (
               <>
                 <ReviewDetails total={total} classInfo={classInfo} />
-                <h3 className='rankingH3'>Rankings</h3>
+                <h3 className="rankingH3">Rankings</h3>
                 <motion.div
                   variants={rankBoardVariants}
-                  className='rankBoardDiv'
+                  className="rankBoardDiv"
                 >
                   {rankList.map((item, i) => (
                     <motion.div
                       variants={rankCardVariants}
                       key={i}
-                      className='rankCard'
+                      className="rankCard"
                     >
-                      <div className='rankNo'>{i + 1}</div>
-                      <p className='teacherName'>{item.teacherName}</p>
-                      <p className='subjects'>
+                      <div className="rankNo">{i + 1}</div>
+                      <p className="teacherName">{item.teacherName}</p>
+                      <p className="subjects">
                         {item.subfull} ,
-                        <span className='subCode'> {item.subcode}</span>
+                        <span className="subCode"> {item.subcode}</span>
                       </p>
-                      <p className='point'>
+                      <p className="point">
                         {Math.round((item.avgRating / 50) * 100)}%
                       </p>
                     </motion.div>
                   ))}
                 </motion.div>
                 <hr />
-                <h3 className='rankingH3'>Bar Chart</h3>
-                <div className='barChart'>
+                <h3 className="rankingH3">Bar Chart</h3>
+                <div className="barChart">
                   <Barchart data={rankList} />
                 </div>
                 <hr />
-                <h2 className='rankingH2'>Get Review Details</h2>
+                <h2 className="rankingH2">Get Review Details</h2>
                 <GetNotComplete classInfo={classInfo} />
                 <hr />
-                <h2 className='rankingH2'>Send and Save the Report</h2>
+                <h2 className="rankingH2">Send and Save the Report</h2>
                 <SendReports />
               </>
             ) : (
-              <p className='noReviewGot'>Not Any Review Data Collected</p>
+              <p className="noReviewGot">Not Any Review Data Collected</p>
             )}
           </>
         )}
