@@ -1,11 +1,18 @@
+import { useState } from 'react'
 import { useMemo } from 'react'
 import {
   FaSortAmountDown,
   FaSortAmountDownAlt,
   FaSortAmountUp,
 } from 'react-icons/fa'
-import { useSortBy, useTable } from 'react-table'
+import {
+  useGlobalFilter,
+  usePagination,
+  useSortBy,
+  useTable,
+} from 'react-table'
 import { COLUMNS } from '../../utils/table'
+import FilterTeacherTable from './filterTeacherTable'
 import './teacherLists.style.css'
 
 export default function TeacherList({ listData, handleEditBtn }) {
@@ -27,18 +34,36 @@ export default function TeacherList({ listData, handleEditBtn }) {
     []
   )
   const data = useMemo(() => listData, [])
-  console.log(data)
-  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
-    useTable(
-      {
-        columns,
-        data,
-      },
-      useSortBy
-    )
 
+  const {
+    getTableProps,
+    getTableBodyProps,
+    headerGroups,
+    page,
+    prepareRow,
+    setGlobalFilter,
+    state,
+    nextPage,
+    previousPage,
+    canNextPage,
+    canPreviousPage,
+    pageOptions,
+    gotoPage,
+    pageCount,
+  } = useTable(
+    {
+      columns,
+      data,
+    },
+    useGlobalFilter,
+    useSortBy,
+    usePagination
+  )
+
+  const { globalFilter, pageIndex } = state
   return (
     <div className="teacherLists">
+      <FilterTeacherTable filter={globalFilter} setFilter={setGlobalFilter} />
       <table {...getTableProps()}>
         <thead>
           {headerGroups.map((headerGroup) => (
@@ -62,7 +87,7 @@ export default function TeacherList({ listData, handleEditBtn }) {
           ))}
         </thead>
         <tbody {...getTableBodyProps()}>
-          {rows.map((row) => {
+          {page.map((row) => {
             prepareRow(row)
             return (
               <tr {...row.getRowProps()}>
@@ -74,6 +99,24 @@ export default function TeacherList({ listData, handleEditBtn }) {
           })}
         </tbody>
       </table>
+      <div className="paginationDiv">
+        <button onClick={previousPage} disabled={!canPreviousPage}>
+          Prev
+        </button>
+        <div className="pageNumbers">
+          {pageOptions.map((page) => (
+            <span
+              className={pageIndex === page ? 'active' : ''}
+              onClick={() => gotoPage(page)}
+            >
+              {page + 1}
+            </span>
+          ))}
+        </div>
+        <button onClick={nextPage} disabled={!canNextPage}>
+          Next
+        </button>
+      </div>
     </div>
   )
 }
