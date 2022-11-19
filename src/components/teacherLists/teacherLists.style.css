@@ -49,3 +49,9 @@
   right: 10px;
   top: 13px;
 }
+
+.teacherLists .editBtn {
+  color: red;
+  font-weight: 600;
+  width: 100%;
+}

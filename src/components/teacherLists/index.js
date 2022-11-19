@@ -15,7 +15,10 @@ export default function TeacherList({ listData, handleEditBtn }) {
       {
         Header: 'Action',
         Cell: (value) => (
-          <button onClick={() => handleEditBtn(value.row.original)}>
+          <button
+            className="editBtn"
+            onClick={() => handleEditBtn(value.row.original)}
+          >
             Edit
           </button>
         ),
