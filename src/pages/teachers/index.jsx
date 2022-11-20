@@ -111,9 +111,10 @@ export default function Teachers() {
         Teachers
       </h1>
       <p className="intro">
-        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ratione
-        quaerat dolore soluta ullam natus, debitis illo fuga similique fugiat
-        eaque eveniet quod ad, excepturi quasi quam quae magni ipsa architecto.
+        Click <strong>Get Teacher Lists</strong> button to get teacher data or
+        refresh teacher data, Click on any column for <strong>sorting</strong>,
+        To search text pattern just type in the <strong>Search bar</strong> and
+        to add data click <strong>Add Data</strong> button.
       </p>
       <div className="mainBtnDiv">
         <button
