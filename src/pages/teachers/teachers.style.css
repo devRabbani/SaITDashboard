@@ -23,3 +23,8 @@
 .teacherAddUpdate .btnDiv button {
   margin-right: 10px;
 }
+
+.teachersWrapper .mainBtnDiv {
+  display: flex;
+  gap: 10px;
+}

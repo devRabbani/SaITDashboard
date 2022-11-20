@@ -1,33 +1,98 @@
 import { useState } from 'react'
-
-const semList = [
-  { name: '1st', value: 1 },
-  { name: '2nd', value: 2 },
-  { name: '3rd', value: 3 },
-  { name: '4th', value: 4 },
-  { name: '5th', value: 5 },
-  { name: '6th', value: 6 },
-  { name: '7th', value: 7 },
-  { name: '8th', value: 8 },
-]
-
-const branchList = [
-  { name: 'CSE', value: 'cse' },
-  { name: 'ISE', value: 'ise' },
-  { name: 'MECH', value: 'mech' },
-  { name: 'CIV', value: 'civ' },
-  { name: 'ECE', value: 'ece' },
-]
+import toast from 'react-hot-toast'
+import { branchList, semList } from '../../utils/deptData'
+import { addDataToDB, deleteDBData, updateDataToDB } from '../../utils/firebase'
 
 export default function TeacherAddUpdate({
   teacherData,
   handleChange,
-  handleIsFormOpen,
-  handleIsFormClose,
+  handleFormClose,
+  handleData,
   isForm,
 }) {
   const { teacherName, sem, branch, subcode, subfull, id, avgRating, total } =
     teacherData
+
+  const [isLoading, setIsLoading] = useState(false)
+
+  // Add Data Function
+  const handleAdd = async (e) => {
+    e.preventDefault()
+    setIsLoading(true)
+    const toastId = toast.loading(<b>Adding data to DB</b>)
+    try {
+      await addDataToDB('teachers', {
+        ...teacherData,
+        teacherName: teacherName.trim(),
+        subfull: subfull.trim(),
+        sem: parseInt(sem),
+        subcode: subcode.trim().toUpperCase(),
+      })
+      setIsLoading(false)
+      handleFormClose()
+      toast.success(<b>{teacherName} added successfully</b>, { id: toastId })
+
+      handleData()
+    } catch (error) {
+      console.log(error.message)
+      setIsLoading(false)
+      toast.error(<b>{error.message}</b>, { id: toastId })
+    }
+  }
+
+  //Update Function
+  const handleUpdate = async (e) => {
+    e.preventDefault()
+    setIsLoading(true)
+    const toastId = toast.loading(<b>Updating Data</b>)
+    try {
+      await updateDataToDB(`teachers/${id}`, {
+        branch,
+        teacherName: teacherName.trim(),
+        subfull: subfull.trim(),
+        sem: parseInt(sem),
+        subcode: subcode.trim().toUpperCase(),
+      })
+      setIsLoading(false)
+      handleFormClose()
+      toast.success(<b>{teacherName} updated successfully</b>, {
+        id: toastId,
+      })
+
+      handleData()
+    } catch (error) {
+      console.log(error.message)
+      setIsLoading(false)
+      toast.error(<b>{error.message}</b>, { id: toastId })
+    }
+  }
+
+  //Update Function
+  const handleDelete = async (e) => {
+    e.preventDefault()
+
+    const isConfirm = prompt(
+      `Type 'YES'  if you want to delete data of ${teacherName}`
+    )
+    if (isConfirm.trim().toLowerCase() === 'yes') {
+      setIsLoading(true)
+      const toastId = toast.loading(<b>Deleting Data</b>)
+      try {
+        await deleteDBData(`teachers/${id}`)
+        setIsLoading(false)
+        handleFormClose()
+        toast.success(<b>{teacherName} deleted successfully</b>, {
+          id: toastId,
+        })
+
+        handleData()
+      } catch (error) {
+        console.log(error.message)
+        setIsLoading(false)
+        toast.error(<b>{error.message}</b>, { id: toastId })
+      }
+    }
+  }
 
   return (
     <div className="teacherAddUpdate">
@@ -78,27 +143,35 @@ export default function TeacherAddUpdate({
           <div className="btnDiv">
             {id ? (
               <>
-                <button className="btn green">Update</button>
-                <button className="btn red">Delete</button>
-                <button onClick={handleIsFormClose} className="btn border-grey">
-                  Close
+                <button
+                  className="btn green"
+                  onClick={handleUpdate}
+                  disabled={isLoading}
+                >
+                  {isLoading ? 'Updating' : 'Update'}
+                </button>
+                <button
+                  className="btn red"
+                  onClick={handleDelete}
+                  disabled={isLoading}
+                >
+                  {isLoading ? 'Deleting' : 'Delete'}
                 </button>
               </>
             ) : (
               <>
-                <button className="btn secondary">Add Data</button>
-                <button onClick={handleIsFormClose} className="btn border-grey">
-                  Close
+                <button
+                  className="btn secondary"
+                  onClick={handleAdd}
+                  disabled={isLoading}
+                >
+                  {isLoading ? 'Adding' : 'Add Data'}
                 </button>
               </>
             )}
           </div>
         </form>
-      ) : (
-        <button onClick={handleIsFormOpen} className="btn border-blue">
-          Add Data
-        </button>
-      )}
+      ) : null}
     </div>
   )
 }

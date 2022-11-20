@@ -1,7 +1,9 @@
 import {
+  addDoc,
   arrayUnion,
   collection,
   collectionGroup,
+  deleteDoc,
   doc,
   getDoc,
   getDocs,
@@ -116,4 +118,19 @@ export const getDBData = async (ref) => {
   if (!snapshot.empty) {
     return snapshot.docs.map((item) => ({ ...item.data(), id: item.id }))
   }
+}
+
+export const addDataToDB = async (ref, data) => {
+  const q = collection(db, ref)
+  await addDoc(q, data)
+}
+
+export const updateDataToDB = async (ref, data) => {
+  const docRef = doc(db, ref)
+  await updateDoc(docRef, data)
+}
+
+export const deleteDBData = async (ref) => {
+  const docRef = doc(db, ref)
+  await deleteDoc(docRef)
 }

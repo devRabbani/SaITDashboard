@@ -6,12 +6,14 @@ import {
   FaSortAmountUp,
 } from 'react-icons/fa'
 import {
+  useFilters,
   useGlobalFilter,
   usePagination,
   useSortBy,
   useTable,
 } from 'react-table'
 import { COLUMNS } from '../../utils/table'
+import Pagination from '../pagination'
 import FilterTeacherTable from './filterTeacherTable'
 import './teacherLists.style.css'
 
@@ -42,6 +44,7 @@ export default function TeacherList({ listData, handleEditBtn }) {
     page,
     prepareRow,
     setGlobalFilter,
+    setFilter,
     state,
     nextPage,
     previousPage,
@@ -49,21 +52,30 @@ export default function TeacherList({ listData, handleEditBtn }) {
     canPreviousPage,
     pageOptions,
     gotoPage,
-    pageCount,
+    setAllFilters,
   } = useTable(
     {
       columns,
       data,
+      initialState: { pageSize: 20 },
     },
+    useFilters,
     useGlobalFilter,
     useSortBy,
     usePagination
   )
 
-  const { globalFilter, pageIndex } = state
+  const { globalFilter, pageIndex, filters } = state
+
   return (
     <div className="teacherLists">
-      <FilterTeacherTable filter={globalFilter} setFilter={setGlobalFilter} />
+      <FilterTeacherTable
+        filter={globalFilter}
+        setFilter={setGlobalFilter}
+        setColumnFilters={setFilter}
+        columnFilters={filters}
+        setAll={setAllFilters}
+      />
       <table {...getTableProps()}>
         <thead>
           {headerGroups.map((headerGroup) => (
@@ -99,24 +111,17 @@ export default function TeacherList({ listData, handleEditBtn }) {
           })}
         </tbody>
       </table>
-      <div className="paginationDiv">
-        <button onClick={previousPage} disabled={!canPreviousPage}>
-          Prev
-        </button>
-        <div className="pageNumbers">
-          {pageOptions.map((page) => (
-            <span
-              className={pageIndex === page ? 'active' : ''}
-              onClick={() => gotoPage(page)}
-            >
-              {page + 1}
-            </span>
-          ))}
-        </div>
-        <button onClick={nextPage} disabled={!canNextPage}>
-          Next
-        </button>
-      </div>
+      {!page.length ? <p className="noDataTable">No Data Found</p> : null}
+
+      <Pagination
+        gotoPage={gotoPage}
+        canNextPage={canNextPage}
+        nextPage={nextPage}
+        canPreviousPage={canPreviousPage}
+        previousPage={previousPage}
+        pageIndex={pageIndex}
+        pageOptions={pageOptions}
+      />
     </div>
   )
 }

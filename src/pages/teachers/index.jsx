@@ -45,12 +45,12 @@ export default function Teachers() {
   const topRef = useRef()
 
   // Callback function for isformChange
-  const handleIsFormOpen = () => {
+  const handleFormOpen = () => {
     setIsForm(true)
   }
 
   // Callback function for close isform
-  const handleIsFormClose = () => {
+  const handleFormClose = () => {
     setTeacherData({
       teacherName: '',
       branch: '',
@@ -115,21 +115,31 @@ export default function Teachers() {
         quaerat dolore soluta ullam natus, debitis illo fuga similique fugiat
         eaque eveniet quod ad, excepturi quasi quam quae magni ipsa architecto.
       </p>
-      <button
-        onClick={handleClick}
-        className="btn primary medium"
-        disabled={isLoading}
-      >
-        {isLoading ? 'Loading..' : 'Get Teacher Lists'}
-      </button>
+      <div className="mainBtnDiv">
+        <button
+          onClick={handleClick}
+          className="btn primary medium"
+          disabled={isLoading}
+        >
+          {isLoading ? 'Loading..' : 'Get Teacher Lists'}
+        </button>
+
+        <button
+          onClick={isForm ? handleFormClose : handleFormOpen}
+          className={`btn ${isForm ? 'border-grey' : 'border-blue'}`}
+        >
+          {isForm ? 'Close' : 'Add data'}
+        </button>
+      </div>
 
       <TeacherAddUpdate
-        handleIsFormOpen={handleIsFormOpen}
-        handleIsFormClose={handleIsFormClose}
+        handleFormOpen={handleFormOpen}
+        handleFormClose={handleFormClose}
         isForm={isForm}
         handleChange={handleChange}
         teacherData={teacherData}
         topRef={topRef}
+        handleData={handleClick}
       />
 
       {data && !isLoading ? (
