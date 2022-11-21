@@ -1,9 +1,5 @@
 export const COLUMNS = [
   {
-    Header: 'No',
-    Cell: (value) => value.row.index + 1,
-  },
-  {
     Header: 'Name',
     accessor: 'teacherName',
   },
@@ -14,6 +10,24 @@ export const COLUMNS = [
   {
     Header: 'Sem',
     accessor: 'sem',
+  },
+  {
+    Header: 'Sections',
+    accessor: 'sections',
+    disableSortBy: true,
+    Cell: ({ value }) => {
+      return value ? (
+        <div className="sections">
+          {value.sort().map((section) => (
+            <div key={section} className={`section ${section || ''}`}>
+              {section}
+            </div>
+          ))}
+        </div>
+      ) : (
+        'No Section'
+      )
+    },
   },
   {
     Header: 'Subject',

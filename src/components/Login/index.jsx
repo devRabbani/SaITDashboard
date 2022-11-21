@@ -52,11 +52,11 @@ export default function Login({ user }) {
   }
 
   useEffect(() => {
-    if (!isLoading && user && !isCancel) {
+    if (!isLoading && user) {
       navigate('/')
     }
     return () => (isCancel.current = true)
-  }, [])
+  }, [isLoading, navigate, isCancel])
 
   return (
     <div className="loginWrapper">

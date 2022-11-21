@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import toast from 'react-hot-toast'
 import { getNotCompList } from '../../utils/firebase'
 import './getNotComplete.style.css'
 
@@ -9,6 +10,7 @@ export default function GetNotComplete({ classInfo }) {
 
   const handleClick = async () => {
     setIsLoading(true)
+    const id = toast.loading(<b>Getting Data</b>)
     try {
       const result = await getNotCompList(
         classInfo.branch,
@@ -20,7 +22,9 @@ export default function GetNotComplete({ classInfo }) {
       if (result.length === 0) {
         setIsEmpty(true)
       }
+      toast.success(<b>Found data</b>, { id })
     } catch (error) {
+      toast.error(<b>{error.message}</b>, { id })
       console.log('Something Went Wrong', error)
       setIsLoading(false)
     }

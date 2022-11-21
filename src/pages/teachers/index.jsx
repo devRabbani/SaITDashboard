@@ -3,6 +3,7 @@ import { useRef, useState } from 'react'
 import toast from 'react-hot-toast'
 import TeacherAddUpdate from '../../components/teacherAddUpdate'
 import TeacherList from '../../components/teacherLists'
+import { useTeacherData } from '../../context/TeacherContext'
 import useTitle from '../../hooks/useTitle'
 import { getDBData } from '../../utils/firebase'
 import './teachers.style.css'
@@ -27,7 +28,6 @@ const wrapperVariants = {
   },
 }
 export default function Teachers() {
-  const [data, setData] = useState()
   const [isLoading, setIsLoading] = useState(false)
   const [teacherData, setTeacherData] = useState({
     teacherName: '',
@@ -37,8 +37,13 @@ export default function Teachers() {
     subfull: '',
     total: 0,
     avgRating: 0,
+    subshort: '',
+    sections: [],
   })
   const [isForm, setIsForm] = useState(false)
+
+  // Teacher Context
+  const { data, addTeacherData } = useTeacherData()
 
   // Refs
   // Scroll Ref
@@ -59,17 +64,25 @@ export default function Teachers() {
       subfull: '',
       total: 0,
       avgRating: 0,
+      subshort: '',
+      sections: [],
     })
     setIsForm(false)
   }
 
   // Changing Inputs
   const handleChange = (e) => {
-    e.preventDefault()
     const { name, value } = e.target
     setTeacherData((prev) => ({
       ...prev,
       [name]: value,
+    }))
+  }
+  // Changing Sections
+  const addSections = (value) => {
+    setTeacherData((prev) => ({
+      ...teacherData,
+      sections: value,
     }))
   }
 
@@ -87,7 +100,7 @@ export default function Teachers() {
     try {
       const res = await getDBData('teachers')
       if (res) {
-        setData(res)
+        addTeacherData(res)
       }
       toast.success(<b>Got the data</b>, { id })
       setIsLoading(false)
@@ -111,7 +124,7 @@ export default function Teachers() {
         Teachers
       </h1>
       <p className="intro">
-        Click <strong>Get Teacher Lists</strong> button to get teacher data or
+        Click <strong>Get Teachers List</strong> button to get teacher data or
         refresh teacher data, Click on any column for <strong>sorting</strong>,
         To search text pattern just type in the <strong>Search bar</strong> and
         to add data click <strong>Add Data</strong> button.
@@ -122,7 +135,11 @@ export default function Teachers() {
           className="btn primary medium"
           disabled={isLoading}
         >
-          {isLoading ? 'Loading..' : 'Get Teacher Lists'}
+          {isLoading
+            ? 'Loading..'
+            : data
+            ? 'Refresh Data'
+            : 'Get Teachers List'}
         </button>
 
         <button
@@ -134,13 +151,12 @@ export default function Teachers() {
       </div>
 
       <TeacherAddUpdate
-        handleFormOpen={handleFormOpen}
         handleFormClose={handleFormClose}
         isForm={isForm}
         handleChange={handleChange}
         teacherData={teacherData}
-        topRef={topRef}
         handleData={handleClick}
+        addSections={addSections}
       />
 
       {data && !isLoading ? (

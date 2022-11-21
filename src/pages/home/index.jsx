@@ -98,7 +98,6 @@ export default function Home({
     setIsLoading(true)
     e.preventDefault()
     const data = await generateRanking(branch, parseInt(sem))
-    console.log(data)
     if (data.length) {
       setIsLoading(false)
       setIsNoData(false)

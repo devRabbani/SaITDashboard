@@ -4,7 +4,10 @@ import {
   FaSortAmountDown,
   FaSortAmountDownAlt,
   FaSortAmountUp,
+  FaSortDown,
+  FaSortUp,
 } from 'react-icons/fa'
+import { MdOutlineArrowDropDown, MdOutlineArrowDropUp } from 'react-icons/md'
 import {
   useFilters,
   useGlobalFilter,
@@ -86,9 +89,9 @@ export default function TeacherList({ listData, handleEditBtn }) {
 
                   {column.isSorted ? (
                     column.isSortedDesc ? (
-                      <FaSortAmountUp className="iconSort" />
+                      <MdOutlineArrowDropUp className="iconSort" />
                     ) : (
-                      <FaSortAmountDown className="iconSort" />
+                      <MdOutlineArrowDropDown className="iconSort" />
                     )
                   ) : (
                     ''

@@ -72,7 +72,6 @@ export const getNotCompList = async (branch, sem) => {
 
 export const getProfile = async (uid) => {
   const snapshot = await getDoc(doc(db, 'admins/' + uid))
-  console.log('run fromserver')
   if (snapshot.exists()) {
     return snapshot.data()
   } else {
@@ -103,7 +102,6 @@ export const clearAndCreate = async (branch, sem) => {
       batch.update(item.ref, { avgRating: 0, total: 0 })
     )
   }
-  console.log(studentSnapshot.docs.length, branch, sem)
   if (!studentSnapshot.empty) {
     studentSnapshot.docs.map((item) =>
       batch.update(item.ref, { complete: [], status: false })

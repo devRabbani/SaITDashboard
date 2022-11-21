@@ -9,9 +9,18 @@ export default function TeacherAddUpdate({
   handleFormClose,
   handleData,
   isForm,
+  addSections,
 }) {
-  const { teacherName, sem, branch, subcode, subfull, id, avgRating, total } =
-    teacherData
+  const {
+    teacherName,
+    sem,
+    branch,
+    subcode,
+    subfull,
+    id,
+    subshort = '',
+    sections = [],
+  } = teacherData
 
   const [isLoading, setIsLoading] = useState(false)
 
@@ -26,6 +35,7 @@ export default function TeacherAddUpdate({
         teacherName: teacherName.trim(),
         subfull: subfull.trim(),
         sem: parseInt(sem),
+        subshort: subshort.trim().toUpperCase(),
         subcode: subcode.trim().toUpperCase(),
       })
       setIsLoading(false)
@@ -51,6 +61,8 @@ export default function TeacherAddUpdate({
         teacherName: teacherName.trim(),
         subfull: subfull.trim(),
         sem: parseInt(sem),
+        sections,
+        subshort,
         subcode: subcode.trim().toUpperCase(),
       })
       setIsLoading(false)
@@ -94,6 +106,20 @@ export default function TeacherAddUpdate({
     }
   }
 
+  // Handle Checkboxes
+  const handleCheckbox = (e) => {
+    let newSections = [...sections]
+    if (e.target.checked) {
+      newSections = [...sections, e.target.id]
+    } else {
+      newSections.splice(newSections.indexOf(e.target.id), 1)
+    }
+    addSections(newSections)
+  }
+
+  // Checking isChecked
+  const isChecked = (value) => sections?.includes(value)
+
   return (
     <div className="teacherAddUpdate">
       {isForm ? (
@@ -123,6 +149,13 @@ export default function TeacherAddUpdate({
               value={subcode}
               onChange={handleChange}
             />
+            <input
+              type="text"
+              name="subshort"
+              placeholder="Subshort Eg:DAA"
+              value={subshort}
+              onChange={handleChange}
+            />
             <select name="sem" value={sem} onChange={handleChange}>
               <option value="">Choose your sem</option>
               {semList.map((item) => (
@@ -139,6 +172,21 @@ export default function TeacherAddUpdate({
                 </option>
               ))}
             </select>
+          </div>
+
+          <div className="checkBoxes">
+            <span className="sectionSpan">Sections:</span>
+            {['a', 'b', 'c', 'd', 'e', 'f', 'g'].map((item) => (
+              <div key={item} className="checkBox">
+                <input
+                  checked={isChecked(item)}
+                  onChange={handleCheckbox}
+                  type="checkbox"
+                  id={item}
+                />
+                <label htmlFor={item}>{item}</label>
+              </div>
+            ))}
           </div>
           <div className="btnDiv">
             {id ? (

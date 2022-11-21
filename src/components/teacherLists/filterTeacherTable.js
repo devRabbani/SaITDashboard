@@ -13,8 +13,9 @@ export default function FilterTeacherTable({
 
   const sem = columnFilters?.find((item) => item.id === 'sem')?.value
   const branch = columnFilters?.find((item) => item.id === 'branch')?.value
+  const sections = columnFilters?.find((item) => item.id === 'sections')?.value
 
-  const isReset = sem || branch || filter
+  const isReset = sem || branch || filter || sections
 
   // Input change
   const handleChange = useAsyncDebounce((e) => {
@@ -68,6 +69,18 @@ export default function FilterTeacherTable({
           {semList.map((item) => (
             <option value={item.value} key={item.value}>
               {item.name}
+            </option>
+          ))}
+        </select>
+        <select
+          name="sections"
+          value={sections || ''}
+          onChange={(e) => handleSelectChange(e, 'sections')}
+        >
+          <option value="">Sections : All</option>
+          {['a', 'b', 'c', 'd', 'e', 'f', 'g'].map((item) => (
+            <option value={item} key={item}>
+              {item.toUpperCase()}
             </option>
           ))}
         </select>

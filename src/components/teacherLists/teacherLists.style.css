@@ -22,14 +22,15 @@
 .teacherLists tr:hover {
   background-color: rgb(208, 205, 248);
 }
-.teacherLists td:nth-child(3) {
+.teacherLists td:nth-child(2) {
   text-transform: uppercase;
 }
-.teacherLists td:nth-child(1),
+
+.teacherLists td:nth-child(3),
 .teacherLists td:nth-child(4),
 .teacherLists td:nth-child(7),
 .teacherLists td:nth-child(6),
-.teacherLists td:nth-child(3) {
+.teacherLists td:nth-child(2) {
   text-align: center;
 }
 
@@ -41,14 +42,15 @@
   color: white;
 }
 
-.teacherLists th:not(:nth-child(1), :nth-child(7)) {
-  min-width: 100px;
+.teacherLists th:not(:nth-child(4), :nth-child(7)) {
+  min-width: 115px;
   position: relative;
 }
 .teacherLists .iconSort {
   position: absolute;
-  right: 10px;
-  top: 13px;
+  right: 6px;
+  top: 8px;
+  font-size: 1.6rem;
 }
 
 .teacherLists .editBtn {
@@ -68,5 +70,5 @@
 }
 .filterForm input {
   flex-grow: 1;
-  max-width: 500px;
+  max-width: 400px;
 }
