@@ -40,17 +40,17 @@ export const countCompleted = async (branch, sem) => {
     where('sem', '==', sem),
     where('status', '==', true)
   )
-  const incompleteQuery = query(
+  const totalStudentQ = query(
     collection(db, 'students'),
     where('branch', '==', branch),
-    where('sem', '==', sem),
-    where('status', '==', false)
+    where('sem', '==', sem)
   )
   const completeSnap = await getDocs(completeQuery)
-  const incompleteSnap = await getDocs(incompleteQuery)
+  const totalSnap = await getDocs(totalStudentQ)
   const given = completeSnap.size
-  const notgiven = incompleteSnap.size
-  return { given, notgiven }
+  const total = totalSnap.size
+  const notgiven = total - given
+  return { given, notgiven, total }
 }
 
 export const getNotCompList = async (branch, sem) => {

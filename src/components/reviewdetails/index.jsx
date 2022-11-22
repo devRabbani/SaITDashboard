@@ -39,17 +39,21 @@ const reviewCardVariants = {
   },
 }
 
-export default function ReviewDetails({ branch, sem, total }) {
+export default function ReviewDetails({ branch, sem, reviewsGiven }) {
   const [completed, setCompleted] = useState({
     given: 0,
     notgiven: 0,
+    total: 0,
   })
   const [isLoading, setIsLoading] = useState(true)
   const fetchData = async () => {
     try {
-      const { given, notgiven } = await countCompleted(branch, parseInt(sem))
+      const { given, notgiven, total } = await countCompleted(
+        branch,
+        parseInt(sem)
+      )
       setIsLoading(false)
-      setCompleted({ given, notgiven })
+      setCompleted({ given, notgiven, total })
     } catch (error) {
       setIsLoading(false)
       console.log(error)
@@ -58,7 +62,7 @@ export default function ReviewDetails({ branch, sem, total }) {
 
   useEffect(() => {
     fetchData()
-  }, [branch, sem, total])
+  }, [branch, sem])
 
   return (
     <>
@@ -73,16 +77,20 @@ export default function ReviewDetails({ branch, sem, total }) {
           className="reviewCardWrapper"
         >
           <motion.div variants={reviewCardVariants} className="reviewCard">
-            <p>Total Single Reviews Given</p>
-            <p className="numbers">{total}</p>
+            <p>Total Students</p>
+            <p className="numbers">{completed?.total}</p>
           </motion.div>
           <motion.div variants={reviewCardVariants} className="reviewCard">
             <p>Fully Completed</p>
-            <p className="numbers">{completed.given}</p>
+            <p className="numbers">{completed?.given}</p>
           </motion.div>
           <motion.div variants={reviewCardVariants} className="reviewCard">
             <p>Not Fully Completed</p>
-            <p className="numbers">{completed.notgiven}</p>
+            <p className="numbers">{completed?.notgiven}</p>
+          </motion.div>
+          <motion.div variants={reviewCardVariants} className="reviewCard">
+            <p>Reviews Given</p>
+            <p className="numbers">{reviewsGiven}</p>
           </motion.div>
         </motion.div>
       )}

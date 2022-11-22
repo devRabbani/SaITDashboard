@@ -147,9 +147,9 @@ export default function Home() {
   }
 
   // Total Calculating
-  let total = 0
+  let reviewsGiven = 0
   rankList?.forEach((item) => {
-    total += item.total
+    reviewsGiven += item.total
   })
 
   return (
@@ -227,9 +227,13 @@ export default function Home() {
               Rankings Generated for Semester :<span> {sem}</span> , Branch :
               <span> {deptList[branch]}</span>
             </div>
-            {total ? (
+            {reviewsGiven ? (
               <>
-                <ReviewDetails total={total} branch={branch} sem={sem} />
+                <ReviewDetails
+                  reviewsGiven={reviewsGiven}
+                  branch={branch}
+                  sem={sem}
+                />
                 <h3 className="rankingH3">Rankings</h3>
                 <motion.div
                   variants={rankBoardVariants}
