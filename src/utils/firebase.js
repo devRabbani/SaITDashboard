@@ -145,3 +145,15 @@ export const getClassFromDB = async (branch, sem, section) => {
     return snapshot.docs.map((item) => item.data())
   }
 }
+
+export const getStudentsFromDB = async (branch, sem) => {
+  const q = query(
+    collection(db, 'students'),
+    where('branch', '==', branch),
+    where('sem', '==', sem)
+  )
+  const snapshot = await getDocs(q)
+  if (!snapshot.empty) {
+    return snapshot.docs.map((item) => item.data())
+  }
+}

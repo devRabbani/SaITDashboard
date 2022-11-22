@@ -22,7 +22,7 @@ const wrapperVariants = {
     },
   },
   exit: {
-    y: 100,
+    y: 140,
     opacity: 0,
     transition: { ease: 'easeInOut' },
   },

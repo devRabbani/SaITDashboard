@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { useMemo } from 'react'
 import { MdOutlineArrowDropDown, MdOutlineArrowDropUp } from 'react-icons/md'
 import {
@@ -8,11 +7,10 @@ import {
   useSortBy,
   useTable,
 } from 'react-table'
-import { TEACHER_COLUMNS } from '../../utils/table'
-import Pagination from '../pagination'
-import FilterTeacherTable from './filterTeacherTable'
-import './teacherLists.style.css'
+import { STUDENTS_COLUMN } from '../../../utils/table'
+import Pagination from '../../pagination'
 import { motion } from 'framer-motion'
+import FilterTeacherTable from '../../teacherLists/filterTeacherTable'
 
 const tableVariants = {
   hidden: {
@@ -34,10 +32,10 @@ const tableVariants = {
   // },
 }
 
-export default function TeacherList({ listData, handleEditBtn }) {
+export default function StudentsTable({ listData }) {
   const columns = useMemo(
     () => [
-      ...TEACHER_COLUMNS,
+      ...STUDENTS_COLUMN,
       {
         Header: 'Action',
         Cell: (value) => (
@@ -84,15 +82,21 @@ export default function TeacherList({ listData, handleEditBtn }) {
 
   const { globalFilter, pageIndex, filters } = state
 
+  // Functions
+  const handleEditBtn = (e) => {
+    e.preventDefault()
+  }
+
   return (
     <motion.div variants={tableVariants}>
-      <div className="teacherLists">
+      <div className="studentLists">
         <FilterTeacherTable
           filter={globalFilter}
           setFilter={setGlobalFilter}
           setColumnFilters={setFilter}
           columnFilters={filters}
           setAll={setAllFilters}
+          isStudentTable={true}
         />
         <table {...getTableProps()}>
           <thead>

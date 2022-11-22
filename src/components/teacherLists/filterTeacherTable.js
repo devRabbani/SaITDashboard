@@ -8,14 +8,16 @@ export default function FilterTeacherTable({
   columnFilters,
   setColumnFilters,
   setAll,
+  isStudentTable,
 }) {
   const [value, setValue] = useState(filter)
 
   const sem = columnFilters?.find((item) => item.id === 'sem')?.value
   const branch = columnFilters?.find((item) => item.id === 'branch')?.value
   const sections = columnFilters?.find((item) => item.id === 'sections')?.value
+  const status = columnFilters?.find((item) => item.id === 'status')?.value
 
-  const isReset = sem || branch || filter || sections
+  const isReset = sem || branch || filter || sections || status
 
   // Input change
   const handleChange = useAsyncDebounce((e) => {
@@ -84,6 +86,17 @@ export default function FilterTeacherTable({
             </option>
           ))}
         </select>
+        {isStudentTable ? (
+          <select
+            name="status"
+            value={status || ''}
+            onChange={(e) => handleSelectChange(e, 'status')}
+          >
+            <option value="">Status : All</option>
+            <option value={true}>Complete</option>
+            <option value={false}>Pending</option>
+          </select>
+        ) : null}
         {isReset ? (
           <button className="btn border-red" onClick={resetFilter}>
             Reset
