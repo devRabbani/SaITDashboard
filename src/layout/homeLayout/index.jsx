@@ -12,12 +12,11 @@ import './homeLayout.style.css'
 import { signOut } from 'firebase/auth'
 import { auth } from '../../lib/firebase'
 import { toast } from 'react-hot-toast'
-import { useProfile } from '../../context/ProfileContext'
-import TeacherDataContextProvider from '../../context/TeacherContext'
+
+import { useMainData } from '../../context/mainDataContext'
 
 export default function HomeLayout({ children, user }) {
-  const navigate = useNavigate()
-  const { data } = useProfile()
+  const { adminName } = useMainData()
   const handleSignout = () => {
     signOut(auth)
       .then(() => toast.success('Signed Out Successfull'))
@@ -48,7 +47,7 @@ export default function HomeLayout({ children, user }) {
               <FaBook /> Classes
             </NavLink>
           </div>
-          {user && <p className="userName">{data?.name || 'Admin'}</p>}
+          {user && <p className="userName">{adminName || 'Admin'}</p>}
           <div className="logOutDiv">
             {user ? (
               <button onClick={handleSignout}>
@@ -61,9 +60,7 @@ export default function HomeLayout({ children, user }) {
             )}
           </div>
         </div>
-        <div className="mainContent">
-          <TeacherDataContextProvider>{children}</TeacherDataContextProvider>
-        </div>
+        <div className="mainContent">{children}</div>
       </div>
     </div>
   )

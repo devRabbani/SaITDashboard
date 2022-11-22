@@ -3,7 +3,7 @@ import { useRef, useState } from 'react'
 import toast from 'react-hot-toast'
 import TeacherAddUpdate from '../../components/teacherAddUpdate'
 import TeacherList from '../../components/teacherLists'
-import { useTeacherData } from '../../context/TeacherContext'
+import { useMainData, useTeacherData } from '../../context/mainDataContext'
 import useTitle from '../../hooks/useTitle'
 import { getDBData } from '../../utils/firebase'
 import './teachers.style.css'
@@ -27,6 +27,7 @@ const wrapperVariants = {
     transition: { ease: 'easeInOut' },
   },
 }
+
 export default function Teachers() {
   const [isLoading, setIsLoading] = useState(false)
   const [teacherData, setTeacherData] = useState({
@@ -43,7 +44,7 @@ export default function Teachers() {
   const [isForm, setIsForm] = useState(false)
 
   // Teacher Context
-  const { data, addTeacherData } = useTeacherData()
+  const { teacherData: data, dispatch } = useMainData()
 
   // Refs
   // Scroll Ref
@@ -100,7 +101,10 @@ export default function Teachers() {
     try {
       const res = await getDBData('teachers')
       if (res) {
-        addTeacherData(res)
+        dispatch({
+          type: 'ADD_DATA',
+          payload: { name: 'teacherData', value: res },
+        })
       }
       toast.success(<b>Got the data</b>, { id })
       setIsLoading(false)
@@ -149,7 +153,6 @@ export default function Teachers() {
           {isForm ? 'Close' : 'Add data'}
         </button>
       </div>
-
       <TeacherAddUpdate
         handleFormClose={handleFormClose}
         isForm={isForm}
@@ -158,7 +161,6 @@ export default function Teachers() {
         handleData={handleClick}
         addSections={addSections}
       />
-
       {data && !isLoading ? (
         !data?.length ? (
           <p className="noData">No teacher data found</p>

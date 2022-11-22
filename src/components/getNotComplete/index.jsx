@@ -3,7 +3,7 @@ import toast from 'react-hot-toast'
 import { getNotCompList } from '../../utils/firebase'
 import './getNotComplete.style.css'
 
-export default function GetNotComplete({ classInfo }) {
+export default function GetNotComplete({ branch, sem }) {
   const [data, setData] = useState([])
   const [isLoading, setIsLoading] = useState(false)
   const [isEmpty, setIsEmpty] = useState(false)
@@ -12,10 +12,7 @@ export default function GetNotComplete({ classInfo }) {
     setIsLoading(true)
     const id = toast.loading(<b>Getting Data</b>)
     try {
-      const result = await getNotCompList(
-        classInfo.branch,
-        parseInt(classInfo.sem)
-      )
+      const result = await getNotCompList(branch, parseInt(sem))
 
       setData(result)
       setIsLoading(false)

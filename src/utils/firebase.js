@@ -132,3 +132,16 @@ export const deleteDBData = async (ref) => {
   const docRef = doc(db, ref)
   await deleteDoc(docRef)
 }
+
+export const getClassFromDB = async (branch, sem, section) => {
+  const q = query(
+    collection(db, 'teachers'),
+    where('branch', '==', branch),
+    where('sem', '==', sem),
+    where('sections', 'array-contains', section)
+  )
+  const snapshot = await getDocs(q)
+  if (!snapshot.empty) {
+    return snapshot.docs.map((item) => item.data())
+  }
+}

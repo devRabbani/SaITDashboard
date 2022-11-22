@@ -25,8 +25,7 @@ export default function TeacherAddUpdate({
   const [isLoading, setIsLoading] = useState(false)
 
   // Add Data Function
-  const handleAdd = async (e) => {
-    e.preventDefault()
+  const handleAdd = async () => {
     setIsLoading(true)
     const toastId = toast.loading(<b>Adding data to DB</b>)
     try {
@@ -51,8 +50,7 @@ export default function TeacherAddUpdate({
   }
 
   //Update Function
-  const handleUpdate = async (e) => {
-    e.preventDefault()
+  const handleUpdate = async () => {
     setIsLoading(true)
     const toastId = toast.loading(<b>Updating Data</b>)
     try {
@@ -106,6 +104,16 @@ export default function TeacherAddUpdate({
     }
   }
 
+  // Handle SUbmit
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    if (teacherData?.id) {
+      handleUpdate()
+    } else {
+      handleAdd()
+    }
+  }
+
   // Handle Checkboxes
   const handleCheckbox = (e) => {
     let newSections = [...sections]
@@ -123,7 +131,7 @@ export default function TeacherAddUpdate({
   return (
     <div className="teacherAddUpdate">
       {isForm ? (
-        <form>
+        <form onSubmit={handleSubmit}>
           <div className="formDiv">
             <input
               type="text"
@@ -131,6 +139,7 @@ export default function TeacherAddUpdate({
               placeholder="Enter Teacher Name"
               value={teacherName}
               onChange={handleChange}
+              required
             />
 
             <input
@@ -139,6 +148,7 @@ export default function TeacherAddUpdate({
               placeholder="Enter Full Subject Name"
               value={subfull}
               onChange={handleChange}
+              required
             />
           </div>
           <div className="formDiv">
@@ -148,6 +158,7 @@ export default function TeacherAddUpdate({
               placeholder="Enter Subcode Eg:18CS21"
               value={subcode}
               onChange={handleChange}
+              required
             />
             <input
               type="text"
@@ -155,8 +166,9 @@ export default function TeacherAddUpdate({
               placeholder="Subshort Eg:DAA"
               value={subshort}
               onChange={handleChange}
+              required
             />
-            <select name="sem" value={sem} onChange={handleChange}>
+            <select required name="sem" value={sem} onChange={handleChange}>
               <option value="">Choose your sem</option>
               {semList.map((item) => (
                 <option key={item.value} value={item.value}>
@@ -164,7 +176,12 @@ export default function TeacherAddUpdate({
                 </option>
               ))}
             </select>
-            <select name="branch" value={branch} onChange={handleChange}>
+            <select
+              required
+              name="branch"
+              value={branch}
+              onChange={handleChange}
+            >
               <option value="">Choose your Branch</option>
               {branchList.map((item) => (
                 <option key={item.value} value={item.value}>
@@ -192,8 +209,8 @@ export default function TeacherAddUpdate({
             {id ? (
               <>
                 <button
+                  type="submit"
                   className="btn green"
-                  onClick={handleUpdate}
                   disabled={isLoading}
                 >
                   {isLoading ? 'Updating' : 'Update'}
@@ -209,8 +226,8 @@ export default function TeacherAddUpdate({
             ) : (
               <>
                 <button
+                  type="submit"
                   className="btn secondary"
-                  onClick={handleAdd}
                   disabled={isLoading}
                 >
                   {isLoading ? 'Adding' : 'Add Data'}

@@ -39,7 +39,7 @@ const reviewCardVariants = {
   },
 }
 
-export default function ReviewDetails({ classInfo, total }) {
+export default function ReviewDetails({ branch, sem, total }) {
   const [completed, setCompleted] = useState({
     given: 0,
     notgiven: 0,
@@ -47,10 +47,7 @@ export default function ReviewDetails({ classInfo, total }) {
   const [isLoading, setIsLoading] = useState(true)
   const fetchData = async () => {
     try {
-      const { given, notgiven } = await countCompleted(
-        classInfo.branch,
-        parseInt(classInfo.sem)
-      )
+      const { given, notgiven } = await countCompleted(branch, parseInt(sem))
       setIsLoading(false)
       setCompleted({ given, notgiven })
     } catch (error) {
@@ -61,31 +58,31 @@ export default function ReviewDetails({ classInfo, total }) {
 
   useEffect(() => {
     fetchData()
-  }, [classInfo, total])
+  }, [branch, sem, total])
 
   return (
     <>
       {isLoading ? (
-        <p className='reviewLoading'>Calculating Please Wait !</p>
+        <p className="reviewLoading">Calculating Please Wait !</p>
       ) : (
         <motion.div
           variants={mainVariants}
-          initial='hidden'
-          animate='visible'
-          exit='exit'
-          className='reviewCardWrapper'
+          initial="hidden"
+          animate="visible"
+          exit="exit"
+          className="reviewCardWrapper"
         >
-          <motion.div variants={reviewCardVariants} className='reviewCard'>
+          <motion.div variants={reviewCardVariants} className="reviewCard">
             <p>Total Single Reviews Given</p>
-            <p className='numbers'>{total}</p>
+            <p className="numbers">{total}</p>
           </motion.div>
-          <motion.div variants={reviewCardVariants} className='reviewCard'>
+          <motion.div variants={reviewCardVariants} className="reviewCard">
             <p>Fully Completed</p>
-            <p className='numbers'>{completed.given}</p>
+            <p className="numbers">{completed.given}</p>
           </motion.div>
-          <motion.div variants={reviewCardVariants} className='reviewCard'>
+          <motion.div variants={reviewCardVariants} className="reviewCard">
             <p>Not Fully Completed</p>
-            <p className='numbers'>{completed.notgiven}</p>
+            <p className="numbers">{completed.notgiven}</p>
           </motion.div>
         </motion.div>
       )}
