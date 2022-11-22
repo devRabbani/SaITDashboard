@@ -6,6 +6,7 @@ import { useMainData } from '../../context/mainDataContext'
 import useTitle from '../../hooks/useTitle'
 import { basicSelect, branchSelect, semSelect } from '../../utils/deptData'
 import { getClassFromDB } from '../../utils/firebase'
+import './classes.styles.css'
 
 const wrapperVariants = {
   hidden: {
@@ -27,8 +28,33 @@ const wrapperVariants = {
   },
 }
 
-// const sems = [1, 2, 3, 4, 5, 6, 7, 8]
-// const secs = ['a', 'b', 'c', 'd', 'e', 'f', 'g']
+const listVariants = {
+  hidden: {
+    opacity: 0,
+    y: 100,
+  },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      opacity: { duration: 0.7, ease: 'easeInOut' },
+      duration: 0.3,
+      when: 'beforeChildren',
+      staggerChildren: 0.2,
+    },
+  },
+}
+
+const cardVariants = {
+  hidden: {
+    scaleY: -1,
+    opacity: 0,
+  },
+  visible: {
+    scaleY: 1,
+    opacity: 1,
+  },
+}
 
 export default function Classes() {
   const { branch: mainBranch, master } = useMainData()
@@ -47,6 +73,7 @@ export default function Classes() {
   // Functuons
   const handleGetTeacher = async (e) => {
     e.preventDefault()
+    setClassLists()
     setIsLoading(true)
     const id = toast.loading(<b>Collecting Class data</b>)
     try {
@@ -66,6 +93,7 @@ export default function Classes() {
   }
   const handleChange = (e) => {
     const { name, value } = e.target
+    setClassLists()
     setClassData((prev) => ({
       ...prev,
       [name]: value,
@@ -147,7 +175,29 @@ export default function Classes() {
       </div>
       {classLists ? (
         classLists?.length ? (
-          <p>{JSON.stringify(classLists)}</p>
+          <motion.div variants={listVariants}>
+            <div className="classesWrapper">
+              <p className="classHeader">
+                {`Semester ${sem}, ${section.toUpperCase()} section, ${branch.toUpperCase()}`}
+              </p>
+              <div className="classLists">
+                {classLists.map((item, i) => (
+                  <motion.div
+                    variants={cardVariants}
+                    key={i}
+                    className="classTeacherCard"
+                  >
+                    <p className="name">{item?.teacherName}</p>
+                    <p className="subject">{item?.subfull}</p>
+                    <div className="bottom">
+                      <span>{item?.subcode || 'Not Found'}</span>
+                      <span>{item?.subshort || 'Not Found'}</span>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+          </motion.div>
         ) : (
           <p className="noData">No Data Found</p>
         )
