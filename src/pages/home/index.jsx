@@ -8,14 +8,15 @@ import Barchart from '../../components/barchart'
 import ReviewDetails from '../../components/reviewdetails'
 import GetNotComplete from '../../components/getNotComplete'
 import SendReports from '../../components/sendReports'
-import { useProfile } from '../../context/ProfileContext'
 import {
   basicSelect,
   branchSelect,
   deptList,
   semSelect,
 } from '../../utils/deptData'
+
 import { toast } from 'react-hot-toast'
+import { useMainData } from '../../context/mainDataContext'
 
 const wrapperVariants = {
   hidden: {
@@ -72,21 +73,12 @@ const rankCardVariants = {
   },
 }
 
-export default function Home({
-  rankList,
-  setRankList,
-  classInfo,
-  setClassInfo,
-}) {
+export default function Home() {
   useTitle('Home | SaITFeedbackAdmin')
   // States
-  // const [classInfo, setClassInfo] = useState({
-  //   branch: '',
-  //   sem: '',
-  // })
-  const { data } = useProfile()
-  const { branch, sem } = classInfo
-  const masterRole = data?.branch === 'master'
+
+  const { rankList, branch, sem, master, dispatch } = useMainData()
+
   const [isLoading, setIsLoading] = useState(false)
   const [clearLoading, setClearLoading] = useState(false)
   // const [rankList, setRankList] = useState([])
@@ -98,27 +90,28 @@ export default function Home({
     setIsLoading(true)
     e.preventDefault()
     const data = await generateRanking(branch, parseInt(sem))
-    console.log(data)
-    if (data.length) {
+    if (data?.length) {
       setIsLoading(false)
       setIsNoData(false)
-      setRankList(data)
+      dispatch({
+        type: 'ADD_DATA',
+        payload: { name: 'rankList', value: data },
+      })
       scrollRef.current.scrollIntoView()
     } else {
       setIsLoading(false)
       setIsNoData(true)
-      setRankList([])
+      dispatch({
+        type: 'RANKS_EMPTY',
+      })
     }
   }
 
   // Handling Inputs
   const handleChange = (e) => {
-    if (rankList.length) setRankList([])
+    if (rankList?.length) dispatch({ type: 'RANKS_EMPTY' })
     const { name, value } = e.target
-    setClassInfo((prev) => ({
-      ...prev,
-      [name]: value,
-    }))
+    dispatch({ type: 'ADD_DATA', payload: { name, value } })
   }
 
   //Clearing Data
@@ -143,11 +136,8 @@ export default function Home({
             id: toastId,
           }
         )
-        setRankList([])
-        setClassInfo((prev) => ({
-          ...prev,
-          sem: '',
-        }))
+        dispatch({ type: 'RANKS_EMPTY' })
+        dispatch({ type: 'ADD_DATA', payload: { name: 'sem', value: '' } })
       } catch (error) {
         toast.error('Something went wrong, Try Again!', { id: toastId })
         console.log(error)
@@ -157,9 +147,9 @@ export default function Home({
   }
 
   // Total Calculating
-  let total = 0
-  rankList.forEach((item) => {
-    total += item.total
+  let reviewsGiven = 0
+  rankList?.forEach((item) => {
+    reviewsGiven += item.total
   })
 
   return (
@@ -172,11 +162,9 @@ export default function Home({
       <h1 className="adminHeadline">Home</h1>
       <h2 className="generateH2">Generate Review</h2>
       <div className="generateDiv">
-        <p>
-          {masterRole ? 'Select Department and Semester' : 'Select Semester'}
-        </p>
+        <p>{master ? 'Select Department and Semester' : 'Select Semester'}</p>
         <form onSubmit={handleGenerate}>
-          {masterRole && (
+          {master ? (
             <select
               required
               name="branch"
@@ -189,7 +177,7 @@ export default function Home({
                 </option>
               ))}
             </select>
-          )}
+          ) : null}
 
           {branch && (
             <select required name="sem" value={sem} onChange={handleChange}>
@@ -214,7 +202,7 @@ export default function Home({
           >
             {isLoading ? (
               <LoaderSvg />
-            ) : rankList.length > 0 ? (
+            ) : rankList?.length > 0 ? (
               'Refresh'
             ) : (
               'Generate'
@@ -232,16 +220,20 @@ export default function Home({
         </form>
         {isNoData && <p className="noData">No Data Found</p>}
 
-        {rankList.length > 0 && (
+        {rankList?.length > 0 && (
           <>
             <div ref={scrollRef}></div>
             <div className="rankBoardDetails">
               Rankings Generated for Semester :<span> {sem}</span> , Branch :
               <span> {deptList[branch]}</span>
             </div>
-            {total ? (
+            {reviewsGiven ? (
               <>
-                <ReviewDetails total={total} classInfo={classInfo} />
+                <ReviewDetails
+                  reviewsGiven={reviewsGiven}
+                  branch={branch}
+                  sem={sem}
+                />
                 <h3 className="rankingH3">Rankings</h3>
                 <motion.div
                   variants={rankBoardVariants}
@@ -272,13 +264,13 @@ export default function Home({
                 </div>
                 <hr />
                 <h2 className="rankingH2">Get Review Details</h2>
-                <GetNotComplete classInfo={classInfo} />
+                <GetNotComplete branch={branch} sem={sem} />
                 <hr />
                 <h2 className="rankingH2">Send and Save the Report</h2>
                 <SendReports />
               </>
             ) : (
-              <p className="noReviewGot">Not Any Review Data Collected</p>
+              <p className="noReviewGot">Couldn't get any Review Data</p>
             )}
           </>
         )}

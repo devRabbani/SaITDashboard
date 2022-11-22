@@ -5,7 +5,7 @@ import { Toaster } from 'react-hot-toast'
 import { Route, Routes, useLocation } from 'react-router-dom'
 import Login from './components/Login'
 import RequireAuth from './components/requireAuth'
-import { ProfileContext, useProfile } from './context/ProfileContext'
+import { useMainData } from './context/mainDataContext'
 import useAuth from './hooks/useAuth'
 import HomeLayout from './layout/homeLayout'
 import Classes from './pages/classes'
@@ -19,25 +19,21 @@ export default function App() {
   const user = useAuth()
   const uid = user?.uid
   // States
-
-  const [data, setData] = useState(null)
   const [loading, setLoading] = useState(true)
-
-  const [rankList, setRankList] = useState([])
-  const [classInfo, setClassInfo] = useState({
-    branch: '',
-    sem: '',
-  })
+  const { dispatch } = useMainData()
 
   useEffect(() => {
     const fetchData = async () => {
       const res = await getProfile(uid)
-      setData(res)
       if (res) {
-        setClassInfo((prev) => ({
-          ...prev,
-          branch: res.branch === 'master' ? '' : res.branch,
-        }))
+        dispatch({
+          type: 'ADD_ADMIN_DATA',
+          payload: {
+            branch: res.branch === 'master' ? '' : res.branch,
+            name: res?.name,
+            master: res.branch === 'master' ? true : false,
+          },
+        })
       }
       setLoading(false)
     }
@@ -47,34 +43,22 @@ export default function App() {
   }, [uid])
 
   if (uid && loading) {
-    return <div className='loadingMain'>Loading...</div>
+    return <div className="loadingMain">Loading...</div>
   } else {
     return (
       <>
         <AnimatePresence exitBeforeEnter>
-          <ProfileContext.Provider value={{ data, loading }}>
-            <HomeLayout user={user}>
-              <Routes location={location} key={location.pathname}>
-                <Route element={<RequireAuth user={user} />}>
-                  <Route
-                    path='/'
-                    element={
-                      <Home
-                        rankList={rankList}
-                        setRankList={setRankList}
-                        classInfo={classInfo}
-                        setClassInfo={setClassInfo}
-                      />
-                    }
-                  />
-                  <Route path='/students' element={<Students />} />
-                  <Route path='/teachers' element={<Teachers />} />
-                  <Route path='/classes' element={<Classes />} />
-                </Route>
-                <Route path='/login' element={<Login user={user} />} />
-              </Routes>
-            </HomeLayout>
-          </ProfileContext.Provider>
+          <HomeLayout user={user}>
+            <Routes location={location} key={location.pathname}>
+              <Route element={<RequireAuth user={user} />}>
+                <Route path="/" element={<Home />} />
+                <Route path="/students" element={<Students />} />
+                <Route path="/teachers" element={<Teachers />} />
+                <Route path="/classes" element={<Classes />} />
+              </Route>
+              <Route path="/login" element={<Login user={user} />} />
+            </Routes>
+          </HomeLayout>
         </AnimatePresence>
         <Toaster />
       </>

@@ -31,11 +31,18 @@
   border-color: red;
 }
 
+.reviewCard:nth-child(4) {
+  border-color: rgb(0, 197, 3);
+}
+
 .reviewCard:nth-child(2) p.numbers {
   color: rgb(61, 63, 202);
 }
 .reviewCard:nth-child(3) p.numbers {
   color: red;
+}
+.reviewCard:nth-child(4) p.numbers {
+  color: rgb(0, 197, 3);
 }
 p.reviewLoading {
   margin-top: 29px;

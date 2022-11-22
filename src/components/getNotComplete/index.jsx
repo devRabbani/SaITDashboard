@@ -1,22 +1,27 @@
 import { useState } from 'react'
+import toast from 'react-hot-toast'
 import { getNotCompList } from '../../utils/firebase'
 import './getNotComplete.style.css'
 
-export default function GetNotComplete({ classInfo }) {
+export default function GetNotComplete({ branch, sem }) {
   const [data, setData] = useState([])
   const [isLoading, setIsLoading] = useState(false)
   const [isEmpty, setIsEmpty] = useState(false)
 
   const handleClick = async () => {
     setIsLoading(true)
+    const id = toast.loading(<b>Getting Data</b>)
     try {
-      const result = await getNotCompList(classInfo.branch, classInfo.sem)
+      const result = await getNotCompList(branch, parseInt(sem))
+
       setData(result)
       setIsLoading(false)
       if (result.length === 0) {
         setIsEmpty(true)
       }
+      toast.success(<b>Found data</b>, { id })
     } catch (error) {
+      toast.error(<b>{error.message}</b>, { id })
       console.log('Something Went Wrong', error)
       setIsLoading(false)
     }
@@ -26,8 +31,8 @@ export default function GetNotComplete({ classInfo }) {
     setData([])
   }
   return (
-    <div className='notCompleteWrapper'>
-      <div className='btnWrapper'>
+    <div className="notCompleteWrapper">
+      <div className="btnWrapper">
         <p>Get the students list who didnot complete feedback</p>
         <button onClick={handleClick}>
           {isLoading
@@ -37,13 +42,13 @@ export default function GetNotComplete({ classInfo }) {
             : 'Get Students'}
         </button>
         {data.length > 0 && (
-          <button onClick={handleClear} className='clear'>
+          <button onClick={handleClear} className="clear">
             Clear
           </button>
         )}
       </div>
       {data.length > 0 && (
-        <div className='tableWrapper'>
+        <div className="tableWrapper">
           <table>
             <thead>
               <tr>
@@ -64,7 +69,7 @@ export default function GetNotComplete({ classInfo }) {
           </table>
         </div>
       )}
-      {isEmpty && <p className='noLeft'>No students left for Feedback</p>}
+      {isEmpty && <p className="noLeft">No students left for Feedback</p>}
     </div>
   )
 }
