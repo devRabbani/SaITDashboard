@@ -35,23 +35,7 @@ const tableVariants = {
 }
 
 export default function TeacherList({ listData, handleEditBtn }) {
-  const columns = useMemo(
-    () => [
-      ...TEACHER_COLUMNS,
-      {
-        Header: 'Action',
-        Cell: (value) => (
-          <button
-            className="editBtn"
-            onClick={() => handleEditBtn(value.row.original)}
-          >
-            Edit
-          </button>
-        ),
-      },
-    ],
-    []
-  )
+  const columns = useMemo(() => TEACHER_COLUMNS, [])
   const data = useMemo(() => listData, [])
 
   const {
@@ -79,7 +63,23 @@ export default function TeacherList({ listData, handleEditBtn }) {
     useFilters,
     useGlobalFilter,
     useSortBy,
-    usePagination
+    usePagination,
+    (hooks) => {
+      hooks.visibleColumns.push((column) => [
+        ...column,
+        {
+          Header: 'Action',
+          Cell: ({ row }) => (
+            <button
+              className="editBtn"
+              onClick={() => handleEditBtn(row.original)}
+            >
+              Edit
+            </button>
+          ),
+        },
+      ])
+    }
   )
 
   const { globalFilter, pageIndex, filters } = state

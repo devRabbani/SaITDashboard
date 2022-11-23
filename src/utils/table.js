@@ -41,9 +41,6 @@ export const TEACHER_COLUMNS = [
 
 export const STUDENTS_COLUMN = [
   {
-    Header: 'Select',
-  },
-  {
     Header: 'USN',
     accessor: 'usn',
   },
@@ -62,6 +59,7 @@ export const STUDENTS_COLUMN = [
   {
     Header: 'Section',
     accessor: 'sec',
+    id: 'sections',
   },
   {
     Header: 'Status',

@@ -33,3 +33,12 @@
   font-weight: 600;
   color: grey;
 }
+
+.studentLists input[type='Checkbox'] {
+  width: 16px;
+  height: 16px;
+}
+
+.studentLists .selectedDiv {
+  margin-top: 15px;
+}

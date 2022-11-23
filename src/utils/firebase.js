@@ -154,6 +154,6 @@ export const getStudentsFromDB = async (branch, sem) => {
   )
   const snapshot = await getDocs(q)
   if (!snapshot.empty) {
-    return snapshot.docs.map((item) => item.data())
+    return snapshot.docs.map((item) => ({ ...item.data(), id: item.id }))
   }
 }

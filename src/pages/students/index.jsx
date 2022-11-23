@@ -8,6 +8,7 @@ import StudentsTopBar from '../../components/studentsComp/studentsTopBar'
 import './students.styles.css'
 import StudentsTable from '../../components/studentsComp/studentsTable'
 import toast from 'react-hot-toast'
+import StudentsAddForm from '../../components/studentsComp/studentsAddForm'
 
 const wrapperVariants = {
   hidden: {
@@ -31,10 +32,43 @@ const wrapperVariants = {
 export default function Students() {
   const { studentsList } = useMainData()
   // States
-  const [isLoading, setIsLoading] = useState()
+  const [isLoading, setIsLoading] = useState(false)
+  const [isForm, setIsForm] = useState(false)
+  const [studentData, setStudentData] = useState({
+    usn: '',
+    number: '',
+    branch: '',
+    sec: '',
+    sem: '',
+  })
+
   // Functions
   const handleLoading = (value) => {
     setIsLoading(value)
+  }
+  // Callback function for open isform
+  const handleFormOpen = () => {
+    setIsForm(true)
+  }
+
+  // Callback function for close isform
+  const handleFormClose = () => {
+    setIsForm(false)
+  }
+
+  // Changing inputs
+  const handleChange = (e) => {
+    const { name, value } = e.target
+    setStudentData((prev) => ({
+      ...prev,
+      [name]: value,
+    }))
+  }
+
+  // Update selected 1
+  const handleFormUpdate = (value) => {
+    setStudentData(value)
+    setIsForm(true)
   }
 
   useTitle('Students | SaITFeedbackAdmin')
@@ -51,8 +85,19 @@ export default function Students() {
         modi odit aperiam quod. Velit ad illum reprehenderit ratione culpa?
         Pariatur omnis aliquid minima? Modi, sed culpa ipsam fugit beatae rerum?
       </p>
-      <StudentsTopBar handleLoading={handleLoading} isLoading={isLoading} />
-
+      <StudentsTopBar
+        handleLoading={handleLoading}
+        isLoading={isLoading}
+        isForm={isForm}
+        handleFormClose={handleFormClose}
+        handleFormOpen={handleFormOpen}
+      />
+      {isForm ? (
+        <StudentsAddForm
+          handleChange={handleChange}
+          studentData={studentData}
+        />
+      ) : null}
       {studentsList && !isLoading ? (
         !studentsList?.length ? (
           <p className="noData">No students data found</p>
@@ -61,7 +106,10 @@ export default function Students() {
             <p className="totalStudents">
               Total : {studentsList.length} students found
             </p>
-            <StudentsTable listData={studentsList} />
+            <StudentsTable
+              listData={studentsList}
+              handleFormUpdate={handleFormUpdate}
+            />
           </>
         )
       ) : null}

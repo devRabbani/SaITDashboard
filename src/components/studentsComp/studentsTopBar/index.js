@@ -5,7 +5,13 @@ import { basicSelect, branchSelect, semSelect } from '../../../utils/deptData'
 import { getStudentsFromDB } from '../../../utils/firebase'
 import LoaderSvg from '../../loaderSvg'
 
-export default function StudentsTopBar({ handleLoading, isLoading }) {
+export default function StudentsTopBar({
+  handleLoading,
+  isLoading,
+  isForm,
+  handleFormClose,
+  handleFormOpen,
+}) {
   const { studentsList, branch: mainBranch, master, dispatch } = useMainData()
   // States
   const [classInfo, setClassInfo] = useState({
@@ -43,12 +49,23 @@ export default function StudentsTopBar({ handleLoading, isLoading }) {
     }
   }
 
+  // Changing selects
   const handleChange = (e) => {
     const { name, value } = e.target
     setClassInfo((prev) => ({
       ...prev,
       [name]: value,
     }))
+  }
+
+  // Clicking add data
+  const handleClick = (e) => {
+    e.preventDefault()
+    if (isForm) {
+      handleFormClose()
+    } else {
+      handleFormOpen()
+    }
   }
 
   return (
@@ -91,6 +108,12 @@ export default function StudentsTopBar({ handleLoading, isLoading }) {
             : studentsList?.length > 0
             ? 'Refresh'
             : 'Get Students'}
+        </button>
+        <button
+          onClick={handleClick}
+          className={`btn ${isForm ? 'border-grey' : 'border-blue'}`}
+        >
+          {isForm ? 'Close' : 'Add data'}
         </button>
       </form>
     </div>

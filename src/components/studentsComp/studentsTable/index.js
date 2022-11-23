@@ -4,6 +4,7 @@ import {
   useFilters,
   useGlobalFilter,
   usePagination,
+  useRowSelect,
   useSortBy,
   useTable,
 } from 'react-table'
@@ -11,6 +12,8 @@ import { STUDENTS_COLUMN } from '../../../utils/table'
 import Pagination from '../../pagination'
 import { motion } from 'framer-motion'
 import FilterTeacherTable from '../../teacherLists/filterTeacherTable'
+import Checkbox from '../checkbox'
+import StudentUpdateForm from '../studentUpdateForm'
 
 const tableVariants = {
   hidden: {
@@ -32,22 +35,10 @@ const tableVariants = {
   // },
 }
 
-export default function StudentsTable({ listData }) {
+export default function StudentsTable({ listData, handleFormUpdate }) {
   const columns = useMemo(
-    () => [
-      ...STUDENTS_COLUMN,
-      {
-        Header: 'Action',
-        Cell: (value) => (
-          <button
-            className="editBtn"
-            onClick={() => handleEditBtn(value.row.original)}
-          >
-            Edit
-          </button>
-        ),
-      },
-    ],
+    () => STUDENTS_COLUMN,
+
     []
   )
   const data = useMemo(() => listData, [])
@@ -68,6 +59,8 @@ export default function StudentsTable({ listData }) {
     pageOptions,
     gotoPage,
     setAllFilters,
+    selectedFlatRows,
+    toggleAllRowsSelected,
   } = useTable(
     {
       columns,
@@ -77,11 +70,28 @@ export default function StudentsTable({ listData }) {
     useFilters,
     useGlobalFilter,
     useSortBy,
-    usePagination
+    usePagination,
+    useRowSelect,
+    (hooks) => {
+      hooks.visibleColumns.push((columns) => {
+        return [
+          {
+            id: 'selection',
+            Header: ({ getToggleAllRowsSelectedProps }) => (
+              <Checkbox {...getToggleAllRowsSelectedProps()} />
+            ),
+            Cell: ({ row }) => (
+              <Checkbox {...row.getToggleRowSelectedProps()} />
+            ),
+          },
+          ...columns,
+        ]
+      })
+    }
   )
 
   const { globalFilter, pageIndex, filters } = state
-
+  const selectedLength = selectedFlatRows?.length
   // Functions
   const handleEditBtn = (e) => {
     e.preventDefault()
@@ -98,6 +108,22 @@ export default function StudentsTable({ listData }) {
           setAll={setAllFilters}
           isStudentTable={true}
         />
+        {selectedLength ? (
+          <div className="selectedDiv">
+            {selectedLength > 1 ? (
+              <button className="btn green">
+                Update All : {selectedLength}
+              </button>
+            ) : (
+              <button
+                onClick={() => handleFormUpdate(selectedFlatRows[0]?.original)}
+                className="btn green"
+              >
+                Update Selected
+              </button>
+            )}
+          </div>
+        ) : null}
         <table {...getTableProps()}>
           <thead>
             {headerGroups.map((headerGroup) => (
