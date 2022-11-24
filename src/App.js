@@ -60,6 +60,9 @@ export default function App() {
             </Routes>
           </AnimatePresence>
         </HomeLayout>
+        <div className="mobileVersion">
+          This app is not supported in this width
+        </div>
         <Toaster />
       </>
     )

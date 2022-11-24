@@ -235,6 +235,9 @@ select {
   align-items: center;
   justify-content: space-between;
 }
+.mobileVersion {
+  display: none;
+}
 
 /* For Print */
 @media print {
@@ -243,5 +246,19 @@ select {
     height: initial !important;
     overflow: initial !important;
     -webkit-print-color-adjust: exact;
+  }
+}
+
+@media screen and (max-width: 1170px) {
+  .admin {
+    display: none;
+  }
+  .mobileVersion {
+    display: grid;
+    place-items: center;
+    height: 100vh;
+    width: 100%;
+    font-size: 1.1rem;
+    color: grey;
   }
 }
