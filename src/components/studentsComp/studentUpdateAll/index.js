@@ -3,7 +3,6 @@ import { useState } from 'react'
 import toast from 'react-hot-toast'
 import { db } from '../../../lib/firebase'
 import { branchList, semList } from '../../../utils/deptData'
-import { toastRefresh } from '../../../utils/firebase'
 
 export default function StudentUpdateAll({
   selectedLength,
@@ -53,7 +52,7 @@ export default function StudentUpdateAll({
         batch.commit()
         setIsLoading(false)
         handleClose(false)
-        toast.success(<b>Update done, Now refresh to see the update</b>, { id })
+        toast.success(<b>Update done</b>, { id })
       } catch (error) {
         console.log(error.message)
         setIsLoading(false)
@@ -80,7 +79,7 @@ export default function StudentUpdateAll({
         batch.commit()
         setIsLoading(false)
         handleClose(false)
-        toast.success(<b>Update done, Now refresh to see the update</b>, { id })
+        toast.success(<b>Deleted Successfully</b>, { id })
       } catch (error) {
         console.log(error.message)
         toast.error(<b>{error.message}</b>, { id })
@@ -91,7 +90,6 @@ export default function StudentUpdateAll({
 
   return (
     <>
-      <button onClick={toastRefresh}>Test</button>
       <select name="branch" value={branch} onChange={handleChange}>
         <option value="">Change Branch</option>
         {branchList.map((item) => (

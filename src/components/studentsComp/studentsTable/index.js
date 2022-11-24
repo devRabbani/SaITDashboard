@@ -13,7 +13,6 @@ import Pagination from '../../pagination'
 import { motion } from 'framer-motion'
 import FilterTeacherTable from '../../teacherLists/filterTeacherTable'
 import Checkbox from '../checkbox'
-import { useState } from 'react'
 import StudentUpdateAll from '../studentUpdateAll'
 
 const tableVariants = {
@@ -42,19 +41,8 @@ export default function StudentsTable({ listData, handleFormUpdate }) {
 
     []
   )
-  const [isUpdateAll, setIsUpdateAll] = useState(false)
 
-  // change UpdateAll flag
-  const changeUpdateAll = (value) => {
-    setIsUpdateAll(value)
-  }
-  // handle click update all
-  const handleUpdateAllBtn = () => {
-    setIsUpdateAll(true)
-    toggleAllRowsSelected(false)
-  }
-
-  const data = useMemo(() => listData, [])
+  const data = useMemo(() => listData, [listData])
 
   const {
     getTableProps,

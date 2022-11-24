@@ -1,3 +1,5 @@
+import { useState } from 'react'
+import { useMainData } from '../../../context/mainDataContext'
 import { basicSelect, branchSelect, semSelect } from '../../../utils/deptData'
 
 export default function StudentsTopBar({
@@ -6,12 +8,13 @@ export default function StudentsTopBar({
   isForm,
   handleFormClose,
   handleFormOpen,
-  handleChange,
-  branch,
-  sem,
-  master,
-  isData,
 }) {
+  const { branch: mainBranch, master } = useMainData()
+
+  // States
+  const [sem, setSem] = useState()
+  const [branch, setBranch] = useState(mainBranch)
+
   // Functions
   // Clicking add data
   const handleClick = (e) => {
@@ -26,9 +29,14 @@ export default function StudentsTopBar({
   return (
     <div className="getStudents">
       <p>{master ? 'Select Department and Semester' : 'Select Semester'}</p>
-      <form onSubmit={handleGetStudents}>
+      <form onSubmit={(e) => handleGetStudents(e, branch, sem)}>
         {master ? (
-          <select required name="branch" value={branch} onChange={handleChange}>
+          <select
+            required
+            name="branch"
+            value={branch}
+            onChange={(e) => setBranch(e.target.value)}
+          >
             <option value="">Choose Branch</option>
             {branchSelect.map((branch, i) => (
               <option key={i} value={branch.value}>
@@ -39,7 +47,12 @@ export default function StudentsTopBar({
         ) : null}
 
         {branch && (
-          <select required name="sem" value={sem} onChange={handleChange}>
+          <select
+            required
+            name="sem"
+            value={sem}
+            onChange={(e) => setSem(e.target.value)}
+          >
             <option value="">Select Semester</option>
             {!(branch === 'bs')
               ? semSelect.map((semItem, i) => (
@@ -60,7 +73,7 @@ export default function StudentsTopBar({
           className="btn primary medium"
           type="submit"
         >
-          {isLoading ? 'Getting Data' : isData ? 'Refresh' : 'Get Students'}
+          {isLoading ? 'Getting Data' : 'Get Students'}
         </button>
         <button
           onClick={handleClick}

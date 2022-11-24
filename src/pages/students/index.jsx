@@ -1,13 +1,11 @@
 import useTitle from '../../hooks/useTitle'
 import { motion } from 'framer-motion'
-import { useMainData } from '../../context/mainDataContext'
 import { useRef, useState } from 'react'
 import StudentsTopBar from '../../components/studentsComp/studentsTopBar'
 import './students.styles.css'
 import StudentsTable from '../../components/studentsComp/studentsTable'
-import toast from 'react-hot-toast'
 import StudentsAddForm from '../../components/studentsComp/studentsAddForm'
-import { getStudentsFromDB } from '../../utils/firebase'
+import useLiveData from '../../hooks/useLiveData'
 
 const wrapperVariants = {
   hidden: {
@@ -29,15 +27,12 @@ const wrapperVariants = {
   },
 }
 export default function Students() {
-  const { studentsList, branch: mainBranch, master, dispatch } = useMainData()
   // States
   const [classInfo, setClassInfo] = useState({
     sem: '',
-    branch: mainBranch,
+    branch: '',
   })
-  const { sem, branch } = classInfo
-  // States
-  const [isLoading, setIsLoading] = useState(false)
+  const { branch, sem } = classInfo
   const [isForm, setIsForm] = useState(false)
   const [studentData, setStudentData] = useState({
     usn: '',
@@ -56,6 +51,14 @@ export default function Students() {
   // Callback function for open isform
   const handleFormOpen = () => {
     setIsForm(true)
+  }
+
+  const handleGetStudents = (e, branch, sem) => {
+    e.preventDefault()
+    setClassInfo({
+      branch,
+      sem,
+    })
   }
 
   // Callback function for close isform
@@ -80,15 +83,6 @@ export default function Students() {
     }))
   }
 
-  // Changing selects for getting studentdata
-  const handleChangeClass = (e) => {
-    const { name, value } = e.target
-    setClassInfo((prev) => ({
-      ...prev,
-      [name]: value,
-    }))
-  }
-
   // Update selected 1
   const handleFormUpdate = (value) => {
     setStudentData(value)
@@ -96,37 +90,11 @@ export default function Students() {
     topRef.current.scrollIntoView()
   }
 
-  // Fetch Student Data
-  const handleGetStudents = async (e) => {
-    if (e) {
-      e.preventDefault()
-    }
-    setIsLoading(true)
-    const id = toast.loading(<b>Collecting students data</b>)
-    try {
-      const res = await getStudentsFromDB(branch, parseInt(sem))
-      if (res) {
-        dispatch({
-          type: 'ADD_DATA',
-          payload: { name: 'studentsList', value: res },
-        })
-        setIsLoading(false)
-        toast.success(<b>Found students data</b>, { id })
-      } else {
-        dispatch({
-          type: 'ADD_DATA',
-          payload: { name: 'studentsList', value: [] },
-        })
-        throw new Error('Not found any students data')
-      }
-    } catch (error) {
-      console.log(error.message)
-      setIsLoading(false)
-      toast.error(<b>{error.message}</b>, { id })
-    }
-  }
+  // Getting Live Data
+  const { studentsList, isLoading } = useLiveData(branch, sem)
 
   useTitle('Students | SaITFeedbackAdmin')
+
   return (
     <motion.div
       variants={wrapperVariants}
@@ -143,17 +111,11 @@ export default function Students() {
         isForm={isForm}
         handleFormClose={handleFormClose}
         handleFormOpen={handleFormOpen}
-        handleChange={handleChangeClass}
-        branch={branch}
-        sem={sem}
-        master={master}
-        isData={studentsList?.length > 0}
       />
       {isForm ? (
         <StudentsAddForm
           handleChange={handleChange}
           studentData={studentData}
-          handleGetStudents={handleGetStudents}
           handleFormClose={handleFormClose}
         />
       ) : null}
