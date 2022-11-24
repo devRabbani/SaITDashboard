@@ -1,8 +1,6 @@
 import {
   addDoc,
-  arrayUnion,
   collection,
-  collectionGroup,
   deleteDoc,
   doc,
   getDoc,
@@ -14,7 +12,6 @@ import {
   where,
   writeBatch,
 } from 'firebase/firestore'
-import toast from 'react-hot-toast'
 import { db } from '../lib/firebase'
 
 // Generate Rankings
@@ -52,23 +49,6 @@ export const countCompleted = async (branch, sem) => {
   const total = totalSnap.size
   const notgiven = total - given
   return { given, notgiven, total }
-}
-
-export const getNotCompList = async (branch, sem) => {
-  const q = query(
-    collection(db, 'students'),
-    where('branch', '==', branch),
-    where('sem', '==', sem),
-    where('status', '==', false),
-    orderBy('usn')
-  )
-  const snapshot = await getDocs(q)
-  if (!snapshot.empty) {
-    const data = snapshot.docs.map((item) => item.data())
-    return data
-  } else {
-    return []
-  }
 }
 
 export const getProfile = async (uid) => {

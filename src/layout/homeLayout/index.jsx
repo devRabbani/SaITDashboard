@@ -1,4 +1,4 @@
-import { Link, NavLink, useNavigate } from 'react-router-dom'
+import { Link, NavLink } from 'react-router-dom'
 import {
   FaHome,
   FaUserGraduate,
@@ -6,7 +6,6 @@ import {
   FaBook,
   FaSignOutAlt,
   FaSignInAlt,
-  FaStar,
 } from 'react-icons/fa'
 import './homeLayout.style.css'
 import { signOut } from 'firebase/auth'

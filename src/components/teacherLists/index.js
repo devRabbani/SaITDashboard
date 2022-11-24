@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { useMemo } from 'react'
 import { MdOutlineArrowDropDown, MdOutlineArrowDropUp } from 'react-icons/md'
 import {
@@ -27,16 +26,11 @@ const tableVariants = {
       duration: 0.3,
     },
   },
-  // exit: {
-  //   y: 100,
-  //   opacity: 0,
-  //   transition: { ease: 'easeInOut' },
-  // },
 }
 
 export default function TeacherList({ listData, handleEditBtn }) {
   const columns = useMemo(() => TEACHER_COLUMNS, [])
-  const data = useMemo(() => listData, [])
+  const data = useMemo(() => listData, [listData])
 
   const {
     getTableProps,

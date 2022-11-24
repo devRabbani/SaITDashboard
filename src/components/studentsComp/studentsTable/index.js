@@ -28,11 +28,6 @@ const tableVariants = {
       duration: 0.3,
     },
   },
-  // exit: {
-  //   y: 100,
-  //   opacity: 0,
-  //   transition: { ease: 'easeInOut' },
-  // },
 }
 
 export default function StudentsTable({ listData, handleFormUpdate }) {
