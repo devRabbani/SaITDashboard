@@ -2,7 +2,6 @@ import { useState } from 'react'
 import toast from 'react-hot-toast'
 import { branchList, semList } from '../../../utils/deptData'
 import {
-  addDataToDB,
   addStudentToDb,
   deleteDBData,
   updateDataToDB,
@@ -13,7 +12,6 @@ export default function StudentsAddForm({
   studentData,
   handleChange,
   handleFormClose,
-  handleGetStudents,
 }) {
   const { usn, number, branch, sec, sem, id } = studentData
 
@@ -37,7 +35,6 @@ export default function StudentsAddForm({
       toast.success(<b>{usn.toUpperCase()} added successfully</b>, {
         id: toastId,
       })
-      handleGetStudents()
     } catch (error) {
       console.log(error.message)
       setIsLoading(false)
@@ -61,8 +58,6 @@ export default function StudentsAddForm({
       toast.success(<b>{usn.toUpperCase()} updated successfully</b>, {
         id: toastId,
       })
-
-      handleGetStudents()
     } catch (error) {
       console.log(error.message)
       setIsLoading(false)
@@ -87,8 +82,6 @@ export default function StudentsAddForm({
         toast.success(<b>{usn.toUpperCase()} deleted successfully</b>, {
           id: toastId,
         })
-
-        handleGetStudents()
       } catch (error) {
         console.log(error.message)
         setIsLoading(false)

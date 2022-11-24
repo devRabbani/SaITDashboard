@@ -55,8 +55,6 @@ export default function BatchAdd({ setIsLoading, isLoading, handleFormClose }) {
               skipEmptyLines: true,
               complete: (result) => handleData(result, id),
             })
-
-            console.log('run run run run')
           } catch (error) {
             console.log(error.message)
             toast.error(<b>{error.message}</b>, { id })
