@@ -6,16 +6,17 @@ import LoaderSvg from '../../components/loaderSvg'
 import './home.style.css'
 import Barchart from '../../components/barchart'
 import ReviewDetails from '../../components/reviewdetails'
-import GetNotComplete from '../../components/getNotComplete'
 import SendReports from '../../components/sendReports'
-import { useProfile } from '../../context/ProfileContext'
 import {
   basicSelect,
   branchSelect,
   deptList,
   semSelect,
 } from '../../utils/deptData'
+
 import { toast } from 'react-hot-toast'
+import { useMainData } from '../../context/mainDataContext'
+import PrintFile from '../../components/printFile'
 
 const wrapperVariants = {
   hidden: {
@@ -31,7 +32,7 @@ const wrapperVariants = {
     },
   },
   exit: {
-    y: 100,
+    y: 140,
     opacity: 0,
     transition: { ease: 'easeInOut' },
   },
@@ -72,21 +73,12 @@ const rankCardVariants = {
   },
 }
 
-export default function Home({
-  rankList,
-  setRankList,
-  classInfo,
-  setClassInfo,
-}) {
+export default function Home() {
   useTitle('Home | SaITFeedbackAdmin')
   // States
-  // const [classInfo, setClassInfo] = useState({
-  //   branch: '',
-  //   sem: '',
-  // })
-  const { data } = useProfile()
-  const { branch, sem } = classInfo
-  const masterRole = data?.branch === 'master'
+
+  const { rankList, branch, sem, master, dispatch } = useMainData()
+
   const [isLoading, setIsLoading] = useState(false)
   const [clearLoading, setClearLoading] = useState(false)
   // const [rankList, setRankList] = useState([])
@@ -98,33 +90,35 @@ export default function Home({
     setIsLoading(true)
     e.preventDefault()
     const data = await generateRanking(branch, parseInt(sem))
-    console.log(data)
-    if (data.length) {
+    if (data?.length) {
       setIsLoading(false)
       setIsNoData(false)
-      setRankList(data)
+      dispatch({
+        type: 'ADD_DATA',
+        payload: { name: 'rankList', value: data },
+      })
       scrollRef.current.scrollIntoView()
     } else {
       setIsLoading(false)
       setIsNoData(true)
-      setRankList([])
+      dispatch({
+        type: 'RANKS_EMPTY',
+      })
     }
   }
 
   // Handling Inputs
   const handleChange = (e) => {
-    if (rankList.length) setRankList([])
+    if (rankList?.length) dispatch({ type: 'RANKS_EMPTY' })
     const { name, value } = e.target
-    setClassInfo((prev) => ({
-      ...prev,
-      [name]: value,
-    }))
+    dispatch({ type: 'ADD_DATA', payload: { name, value } })
   }
 
   //Clearing Data
   const handleClear = async (e) => {
     e.preventDefault()
     if (!branch || !sem) return
+    setIsNoData(false)
     setClearLoading(true)
     const sure = window.confirm(
       'Are you sure want to clear previous data and create new feedbacks?'
@@ -142,11 +136,8 @@ export default function Home({
             id: toastId,
           }
         )
-        setRankList([])
-        setClassInfo((prev) => ({
-          ...prev,
-          sem: '',
-        }))
+        dispatch({ type: 'RANKS_EMPTY' })
+        dispatch({ type: 'ADD_DATA', payload: { name: 'sem', value: '' } })
       } catch (error) {
         toast.error('Something went wrong, Try Again!', { id: toastId })
         console.log(error)
@@ -156,42 +147,42 @@ export default function Home({
   }
 
   // Total Calculating
-  let total = 0
-  rankList.forEach((item) => {
-    total += item.total
+  let reviewsGiven = 0
+  rankList?.forEach((item) => {
+    reviewsGiven += item.total
   })
 
   return (
     <motion.div
       variants={wrapperVariants}
-      initial='hidden'
-      animate='visible'
-      exit='exit'
+      initial="hidden"
+      animate="visible"
+      exit="exit"
     >
-      <h1 className='adminHeadline'>Home</h1>
-      <h2 className='generateH2'>Generate Review</h2>
-      <div className='generateDiv'>
-        <p>
-          {masterRole ? 'Select Department and Semester' : 'Select Semester'}
-        </p>
+      <h1 className="adminHeadline">Home</h1>
+      <h2 className="generateH2">Generate Review</h2>
+      <div className="generateDiv">
+        <p>{master ? 'Select Department and Semester' : 'Select Semester'}</p>
         <form onSubmit={handleGenerate}>
-          {masterRole && (
+          {master ? (
             <select
               required
-              name='branch'
+              name="branch"
               value={branch}
               onChange={handleChange}
             >
+              <option value="">Choose Branch</option>
               {branchSelect.map((branch, i) => (
                 <option key={i} value={branch.value}>
                   {branch.name}
                 </option>
               ))}
             </select>
-          )}
+          ) : null}
 
           {branch && (
-            <select required name='sem' value={sem} onChange={handleChange}>
+            <select required name="sem" value={sem} onChange={handleChange}>
+              <option value="">Select Semester</option>
               {!(branch === 'bs')
                 ? semSelect.map((semItem, i) => (
                     <option value={semItem.value} key={i}>
@@ -209,11 +200,11 @@ export default function Home({
           <button
             disabled={isLoading}
             className={isLoading ? 'loading' : ''}
-            type='submit'
+            type="submit"
           >
             {isLoading ? (
               <LoaderSvg />
-            ) : rankList.length > 0 ? (
+            ) : rankList?.length > 0 ? (
               'Refresh'
             ) : (
               'Generate'
@@ -223,61 +214,63 @@ export default function Home({
             <button
               disabled={clearLoading}
               onClick={handleClear}
-              className='clear'
+              className="clear"
             >
               {clearLoading ? 'Please wait' : 'Clear and Create New Feedbacks'}
             </button>
           )}
         </form>
-        {isNoData && <p className='noData'>No Data Found</p>}
+        {isNoData && <p className="noData">No Data Found</p>}
 
-        {rankList.length > 0 && (
+        {rankList?.length > 0 && (
           <>
             <div ref={scrollRef}></div>
-            <div className='rankBoardDetails'>
+            <div className="rankBoardDetails">
               Rankings Generated for Semester :<span> {sem}</span> , Branch :
               <span> {deptList[branch]}</span>
             </div>
-            {total ? (
+            {reviewsGiven ? (
               <>
-                <ReviewDetails total={total} classInfo={classInfo} />
-                <h3 className='rankingH3'>Rankings</h3>
+                <ReviewDetails
+                  reviewsGiven={reviewsGiven}
+                  branch={branch}
+                  sem={sem}
+                />
+                <h3 className="rankingH3">Rankings</h3>
                 <motion.div
                   variants={rankBoardVariants}
-                  className='rankBoardDiv'
+                  className="rankBoardDiv"
                 >
                   {rankList.map((item, i) => (
                     <motion.div
                       variants={rankCardVariants}
                       key={i}
-                      className='rankCard'
+                      className="rankCard"
                     >
-                      <div className='rankNo'>{i + 1}</div>
-                      <p className='teacherName'>{item.teacherName}</p>
-                      <p className='subjects'>
+                      <div className="rankNo">{i + 1}</div>
+                      <p className="teacherName">{item.teacherName}</p>
+                      <p className="subjects">
                         {item.subfull} ,
-                        <span className='subCode'> {item.subcode}</span>
+                        <span className="subCode"> {item.subcode}</span>
                       </p>
-                      <p className='point'>
+                      <p className="point">
                         {Math.round((item.avgRating / 50) * 100)}%
                       </p>
                     </motion.div>
                   ))}
                 </motion.div>
                 <hr />
-                <h3 className='rankingH3'>Bar Chart</h3>
-                <div className='barChart'>
+                <h3 className="rankingH3">Bar Chart</h3>
+                <div className="barChart">
                   <Barchart data={rankList} />
                 </div>
                 <hr />
-                <h2 className='rankingH2'>Get Review Details</h2>
-                <GetNotComplete classInfo={classInfo} />
-                <hr />
-                <h2 className='rankingH2'>Send and Save the Report</h2>
+                <h2 className="rankingH2">Send and Save the Report</h2>
                 <SendReports />
+                <PrintFile branch={branch} sem={sem} rankList={rankList} />
               </>
             ) : (
-              <p className='noReviewGot'>Not Any Review Data Collected</p>
+              <p className="noReviewGot">Couldn't get any Review Data</p>
             )}
           </>
         )}

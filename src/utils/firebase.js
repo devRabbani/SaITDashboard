@@ -1,7 +1,9 @@
 import {
+  addDoc,
   arrayUnion,
   collection,
   collectionGroup,
+  deleteDoc,
   doc,
   getDoc,
   getDocs,
@@ -12,6 +14,7 @@ import {
   where,
   writeBatch,
 } from 'firebase/firestore'
+import toast from 'react-hot-toast'
 import { db } from '../lib/firebase'
 
 // Generate Rankings
@@ -23,7 +26,7 @@ export const generateRanking = async (branch, sem) => {
     orderBy('avgRating', 'desc')
   )
   const snapshot = await getDocs(q)
-  console.log(branch, typeof sem, snapshot)
+
   if (!snapshot.empty) {
     return snapshot.docs.map((item) => item.data())
   } else {
@@ -38,17 +41,17 @@ export const countCompleted = async (branch, sem) => {
     where('sem', '==', sem),
     where('status', '==', true)
   )
-  const incompleteQuery = query(
+  const totalStudentQ = query(
     collection(db, 'students'),
     where('branch', '==', branch),
-    where('sem', '==', sem),
-    where('status', '==', false)
+    where('sem', '==', sem)
   )
   const completeSnap = await getDocs(completeQuery)
-  const incompleteSnap = await getDocs(incompleteQuery)
+  const totalSnap = await getDocs(totalStudentQ)
   const given = completeSnap.size
-  const notgiven = incompleteSnap.size
-  return { given, notgiven }
+  const total = totalSnap.size
+  const notgiven = total - given
+  return { given, notgiven, total }
 }
 
 export const getNotCompList = async (branch, sem) => {
@@ -70,7 +73,6 @@ export const getNotCompList = async (branch, sem) => {
 
 export const getProfile = async (uid) => {
   const snapshot = await getDoc(doc(db, 'admins/' + uid))
-  console.log('run fromserver')
   if (snapshot.exists()) {
     return snapshot.data()
   } else {
@@ -101,11 +103,63 @@ export const clearAndCreate = async (branch, sem) => {
       batch.update(item.ref, { avgRating: 0, total: 0 })
     )
   }
-  console.log(studentSnapshot.docs.length, branch, sem)
   if (!studentSnapshot.empty) {
     studentSnapshot.docs.map((item) =>
       batch.update(item.ref, { complete: [], status: false })
     )
   }
   batch.commit()
+}
+
+export const getDBData = async (ref) => {
+  const q = collection(db, ref)
+  const snapshot = await getDocs(q)
+  if (!snapshot.empty) {
+    return snapshot.docs.map((item) => ({ ...item.data(), id: item.id }))
+  }
+}
+
+export const addDataToDB = async (ref, data) => {
+  const q = collection(db, ref)
+  await addDoc(q, data)
+}
+
+export const updateDataToDB = async (ref, data) => {
+  const docRef = doc(db, ref)
+  await updateDoc(docRef, data)
+}
+
+export const deleteDBData = async (ref) => {
+  const docRef = doc(db, ref)
+  await deleteDoc(docRef)
+}
+
+export const getClassFromDB = async (branch, sem, section) => {
+  const q = query(
+    collection(db, 'teachers'),
+    where('branch', '==', branch),
+    where('sem', '==', sem),
+    where('sections', 'array-contains', section)
+  )
+  const snapshot = await getDocs(q)
+  if (!snapshot.empty) {
+    return snapshot.docs.map((item) => item.data())
+  }
+}
+
+export const getStudentsFromDB = async (branch, sem) => {
+  const q = query(
+    collection(db, 'students'),
+    where('branch', '==', branch),
+    where('sem', '==', sem)
+  )
+  const snapshot = await getDocs(q)
+  if (!snapshot.empty) {
+    return snapshot.docs.map((item) => ({ ...item.data(), id: item.id }))
+  }
+}
+
+export const addStudentToDb = async (docId, data) => {
+  const docRef = doc(db, `students/${docId}`)
+  await setDoc(docRef, data)
 }
