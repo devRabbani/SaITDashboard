@@ -47,8 +47,8 @@ export default function App() {
   } else {
     return (
       <>
-        <AnimatePresence exitBeforeEnter>
-          <HomeLayout user={user}>
+        <HomeLayout user={user}>
+          <AnimatePresence exitBeforeEnter>
             <Routes location={location} key={location.pathname}>
               <Route element={<RequireAuth user={user} />}>
                 <Route path="/" element={<Home />} />
@@ -58,8 +58,8 @@ export default function App() {
               </Route>
               <Route path="/login" element={<Login user={user} />} />
             </Routes>
-          </HomeLayout>
-        </AnimatePresence>
+          </AnimatePresence>
+        </HomeLayout>
         <Toaster />
       </>
     )

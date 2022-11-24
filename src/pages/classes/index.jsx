@@ -22,7 +22,7 @@ const wrapperVariants = {
     },
   },
   exit: {
-    y: 100,
+    y: 140,
     opacity: 0,
     transition: { ease: 'easeInOut' },
   },
@@ -120,6 +120,7 @@ export default function Classes() {
               value={branch}
               onChange={handleChange}
             >
+              <option value="">Choose Branch</option>
               {branchSelect.map((branch, i) => (
                 <option key={i} value={branch.value}>
                   {branch.name}
@@ -130,6 +131,7 @@ export default function Classes() {
 
           {branch ? (
             <select required name="sem" value={sem} onChange={handleChange}>
+              <option value="">Select Semester</option>
               {!(branch === 'bs')
                 ? semSelect.map((semItem, i) => (
                     <option value={semItem.value} key={i}>

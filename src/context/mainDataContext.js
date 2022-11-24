@@ -14,6 +14,7 @@ const INITIAL_STATE = {
   sem: '',
   adminName: '',
   master: false,
+  studentsList: null,
 }
 
 const reducer = (state, action) => {

@@ -1,18 +1,19 @@
-import { useState } from 'react'
 import { useMemo } from 'react'
 import { MdOutlineArrowDropDown, MdOutlineArrowDropUp } from 'react-icons/md'
 import {
   useFilters,
   useGlobalFilter,
   usePagination,
+  useRowSelect,
   useSortBy,
   useTable,
 } from 'react-table'
-import { TEACHER_COLUMNS } from '../../utils/table'
-import Pagination from '../pagination'
-import FilterTeacherTable from './filterTeacherTable'
-import './teacherLists.style.css'
+import { STUDENTS_COLUMN } from '../../../utils/table'
+import Pagination from '../../pagination'
 import { motion } from 'framer-motion'
+import FilterTeacherTable from '../../teacherLists/filterTeacherTable'
+import Checkbox from '../checkbox'
+import StudentUpdateAll from '../studentUpdateAll'
 
 const tableVariants = {
   hidden: {
@@ -34,9 +35,14 @@ const tableVariants = {
   // },
 }
 
-export default function TeacherList({ listData, handleEditBtn }) {
-  const columns = useMemo(() => TEACHER_COLUMNS, [])
-  const data = useMemo(() => listData, [])
+export default function StudentsTable({ listData, handleFormUpdate }) {
+  const columns = useMemo(
+    () => STUDENTS_COLUMN,
+
+    []
+  )
+
+  const data = useMemo(() => listData, [listData])
 
   const {
     getTableProps,
@@ -54,6 +60,8 @@ export default function TeacherList({ listData, handleEditBtn }) {
     pageOptions,
     gotoPage,
     setAllFilters,
+    selectedFlatRows,
+    toggleAllRowsSelected,
   } = useTable(
     {
       columns,
@@ -64,36 +72,71 @@ export default function TeacherList({ listData, handleEditBtn }) {
     useGlobalFilter,
     useSortBy,
     usePagination,
+    useRowSelect,
     (hooks) => {
-      hooks.visibleColumns.push((column) => [
-        ...column,
-        {
-          Header: 'Action',
-          Cell: ({ row }) => (
-            <button
-              className="editBtn"
-              onClick={() => handleEditBtn(row.original)}
-            >
-              Edit
-            </button>
-          ),
-        },
-      ])
+      hooks.visibleColumns.push((columns) => {
+        return [
+          {
+            id: 'selection',
+            Header: ({ getToggleAllRowsSelectedProps }) => (
+              <Checkbox {...getToggleAllRowsSelectedProps()} />
+            ),
+            Cell: ({ row }) => (
+              <Checkbox {...row.getToggleRowSelectedProps()} />
+            ),
+          },
+          ...columns,
+        ]
+      })
     }
   )
 
   const { globalFilter, pageIndex, filters } = state
+  const selectedLength = selectedFlatRows?.length
+  // Functions
+  const handleUpdateBtn = () => {
+    handleFormUpdate(selectedFlatRows[0]?.original)
+    toggleAllRowsSelected(false)
+  }
 
   return (
     <motion.div variants={tableVariants}>
-      <div className="teacherLists">
-        <FilterTeacherTable
-          filter={globalFilter}
-          setFilter={setGlobalFilter}
-          setColumnFilters={setFilter}
-          columnFilters={filters}
-          setAll={setAllFilters}
-        />
+      <div className="studentLists">
+        <div className="stickyTop">
+          <FilterTeacherTable
+            filter={globalFilter}
+            setFilter={setGlobalFilter}
+            setColumnFilters={setFilter}
+            columnFilters={filters}
+            setAll={setAllFilters}
+            isStudentTable={true}
+          />
+          {selectedLength ? (
+            <div className="updateDivWrapper">
+              <h3>Update</h3>
+              <div className="updateAllDiv">
+                {selectedLength > 1 ? (
+                  <StudentUpdateAll
+                    data={selectedFlatRows}
+                    selectedLength={selectedLength}
+                    handleClose={toggleAllRowsSelected}
+                  />
+                ) : (
+                  <button onClick={handleUpdateBtn} className="btn green">
+                    Update Selected
+                  </button>
+                )}
+                <button
+                  onClick={() => toggleAllRowsSelected(false)}
+                  className="btn border-red"
+                >
+                  Clear Selected
+                </button>
+              </div>
+            </div>
+          ) : null}
+        </div>
+
         <table {...getTableProps()}>
           <thead>
             {headerGroups.map((headerGroup) => (

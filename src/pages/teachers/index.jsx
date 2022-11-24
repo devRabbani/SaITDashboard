@@ -22,7 +22,7 @@ const wrapperVariants = {
     },
   },
   exit: {
-    y: 100,
+    y: 140,
     opacity: 0,
     transition: { ease: 'easeInOut' },
   },
@@ -168,7 +168,6 @@ export default function Teachers() {
           <TeacherList handleEditBtn={handleEditBtn} listData={data} />
         )
       ) : null}
-      {}
     </motion.div>
   )
 }

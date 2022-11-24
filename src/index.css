@@ -221,3 +221,17 @@ select {
   font-size: 1.2rem;
   color: #ba0505;
 }
+
+.toastBtn {
+  padding: 8px 10px;
+  color: rgb(0, 0, 0);
+  background-color: rgb(227, 227, 227);
+  border-radius: 7px;
+}
+
+.toastDiv {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: space-between;
+}
