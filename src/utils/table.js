@@ -62,7 +62,7 @@ export const STUDENTS_COLUMN = [
     id: 'sections',
   },
   {
-    Header: 'Status',
+    Header: 'Feedback',
     accessor: 'status',
     sortType: 'basic',
     Cell: ({ value }) =>
