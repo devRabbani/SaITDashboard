@@ -39,6 +39,33 @@
   height: 16px;
 }
 
-.studentLists .selectedDiv {
-  margin-top: 15px;
+.batchAddDiv {
+  margin-top: 20px;
+  max-width: 700px;
+}
+
+.batchAddDiv .code {
+  background-color: rgb(59, 59, 59);
+  color: white;
+  padding: 20px;
+  margin-top: 10px;
+  font-size: 1rem;
+  line-height: 22px;
+}
+
+.batchAddDiv .code p:nth-child(2) {
+  margin-top: 10px;
+  line-height: 25px;
+  color: greenyellow;
+}
+
+.updateAllDiv {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.updateDivWrapper {
+  margin-top: 20px;
 }

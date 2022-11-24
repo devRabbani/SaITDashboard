@@ -171,6 +171,7 @@ export default function Home() {
               value={branch}
               onChange={handleChange}
             >
+              <option value="">Choose Branch</option>
               {branchSelect.map((branch, i) => (
                 <option key={i} value={branch.value}>
                   {branch.name}
@@ -181,6 +182,7 @@ export default function Home() {
 
           {branch && (
             <select required name="sem" value={sem} onChange={handleChange}>
+              <option value="">Select Semester</option>
               {!(branch === 'bs')
                 ? semSelect.map((semItem, i) => (
                     <option value={semItem.value} key={i}>

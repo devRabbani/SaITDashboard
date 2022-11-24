@@ -7,7 +7,6 @@ export const deptList = {
 }
 
 export const branchSelect = [
-  { value: '', name: 'Select Branch' },
   { value: 'bs', name: 'BASIC' },
   { value: 'cse', name: 'CSE' },
   { value: 'is', name: 'IS' },
@@ -17,7 +16,6 @@ export const branchSelect = [
 ]
 
 export const semSelect = [
-  { value: '', name: 'Select Semester' },
   { value: 3, name: '3rd Sem' },
   { value: 4, name: '4th Sem' },
   { value: 5, name: '5th Sem' },
@@ -27,7 +25,6 @@ export const semSelect = [
 ]
 
 export const basicSelect = [
-  { value: '', name: 'Select Semester' },
   { value: 1, name: '1st Sem' },
   { value: 2, name: '2nd Sem' },
 ]

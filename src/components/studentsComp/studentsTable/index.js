@@ -13,7 +13,8 @@ import Pagination from '../../pagination'
 import { motion } from 'framer-motion'
 import FilterTeacherTable from '../../teacherLists/filterTeacherTable'
 import Checkbox from '../checkbox'
-import StudentUpdateForm from '../studentUpdateForm'
+import { useState } from 'react'
+import StudentUpdateAll from '../studentUpdateAll'
 
 const tableVariants = {
   hidden: {
@@ -41,6 +42,18 @@ export default function StudentsTable({ listData, handleFormUpdate }) {
 
     []
   )
+  const [isUpdateAll, setIsUpdateAll] = useState(false)
+
+  // change UpdateAll flag
+  const changeUpdateAll = (value) => {
+    setIsUpdateAll(value)
+  }
+  // handle click update all
+  const handleUpdateAllBtn = () => {
+    setIsUpdateAll(true)
+    toggleAllRowsSelected(false)
+  }
+
   const data = useMemo(() => listData, [])
 
   const {
@@ -93,37 +106,49 @@ export default function StudentsTable({ listData, handleFormUpdate }) {
   const { globalFilter, pageIndex, filters } = state
   const selectedLength = selectedFlatRows?.length
   // Functions
-  const handleEditBtn = (e) => {
-    e.preventDefault()
+  const handleUpdateBtn = () => {
+    handleFormUpdate(selectedFlatRows[0]?.original)
+    toggleAllRowsSelected(false)
   }
 
   return (
     <motion.div variants={tableVariants}>
       <div className="studentLists">
-        <FilterTeacherTable
-          filter={globalFilter}
-          setFilter={setGlobalFilter}
-          setColumnFilters={setFilter}
-          columnFilters={filters}
-          setAll={setAllFilters}
-          isStudentTable={true}
-        />
-        {selectedLength ? (
-          <div className="selectedDiv">
-            {selectedLength > 1 ? (
-              <button className="btn green">
-                Update All : {selectedLength}
-              </button>
-            ) : (
-              <button
-                onClick={() => handleFormUpdate(selectedFlatRows[0]?.original)}
-                className="btn green"
-              >
-                Update Selected
-              </button>
-            )}
-          </div>
-        ) : null}
+        <div className="stickyTop">
+          <FilterTeacherTable
+            filter={globalFilter}
+            setFilter={setGlobalFilter}
+            setColumnFilters={setFilter}
+            columnFilters={filters}
+            setAll={setAllFilters}
+            isStudentTable={true}
+          />
+          {selectedLength ? (
+            <div className="updateDivWrapper">
+              <h3>Update</h3>
+              <div className="updateAllDiv">
+                {selectedLength > 1 ? (
+                  <StudentUpdateAll
+                    data={selectedFlatRows}
+                    selectedLength={selectedLength}
+                    handleClose={toggleAllRowsSelected}
+                  />
+                ) : (
+                  <button onClick={handleUpdateBtn} className="btn green">
+                    Update Selected
+                  </button>
+                )}
+                <button
+                  onClick={() => toggleAllRowsSelected(false)}
+                  className="btn border-red"
+                >
+                  Clear Selected
+                </button>
+              </div>
+            </div>
+          ) : null}
+        </div>
+
         <table {...getTableProps()}>
           <thead>
             {headerGroups.map((headerGroup) => (

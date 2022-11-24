@@ -14,6 +14,7 @@ import {
   where,
   writeBatch,
 } from 'firebase/firestore'
+import toast from 'react-hot-toast'
 import { db } from '../lib/firebase'
 
 // Generate Rankings
@@ -156,4 +157,35 @@ export const getStudentsFromDB = async (branch, sem) => {
   if (!snapshot.empty) {
     return snapshot.docs.map((item) => ({ ...item.data(), id: item.id }))
   }
+}
+
+export const addStudentToDb = async (docId, data) => {
+  const docRef = doc(db, `students/${docId}`)
+  await setDoc(docRef, data)
+}
+
+export const toastRefresh = () => {
+  toast(
+    (t) => (
+      <div className="toastDiv">
+        <span>
+          <b>Outdated data please refresh for updated data!</b>
+        </span>
+
+        <button className="toastBtn" onClick={() => toast.dismiss(t.id)}>
+          Dismiss
+        </button>
+      </div>
+    ),
+    {
+      duration: 7000,
+      icon: '⚠️',
+      style: {
+        border: '2px solid #f00',
+        padding: '16px',
+        color: '#fff',
+        backgroundColor: '#f00',
+      },
+    }
+  )
 }
