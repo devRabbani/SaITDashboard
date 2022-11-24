@@ -235,3 +235,13 @@ select {
   align-items: center;
   justify-content: space-between;
 }
+
+/* For Print */
+@media print {
+  html,
+  body {
+    height: initial !important;
+    overflow: initial !important;
+    -webkit-print-color-adjust: exact;
+  }
+}

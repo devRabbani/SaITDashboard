@@ -6,7 +6,6 @@ import LoaderSvg from '../../components/loaderSvg'
 import './home.style.css'
 import Barchart from '../../components/barchart'
 import ReviewDetails from '../../components/reviewdetails'
-import GetNotComplete from '../../components/getNotComplete'
 import SendReports from '../../components/sendReports'
 import {
   basicSelect,
@@ -17,6 +16,7 @@ import {
 
 import { toast } from 'react-hot-toast'
 import { useMainData } from '../../context/mainDataContext'
+import PrintFile from '../../components/printFile'
 
 const wrapperVariants = {
   hidden: {
@@ -265,11 +265,9 @@ export default function Home() {
                   <Barchart data={rankList} />
                 </div>
                 <hr />
-                <h2 className="rankingH2">Get Review Details</h2>
-                <GetNotComplete branch={branch} sem={sem} />
-                <hr />
                 <h2 className="rankingH2">Send and Save the Report</h2>
                 <SendReports />
+                <PrintFile branch={branch} sem={sem} rankList={rankList} />
               </>
             ) : (
               <p className="noReviewGot">Couldn't get any Review Data</p>
