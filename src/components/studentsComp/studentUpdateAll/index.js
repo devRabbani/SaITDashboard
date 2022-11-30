@@ -44,7 +44,7 @@ export default function StudentUpdateAll({
           const updateData = {
             ...(branch && { branch }),
             ...(sec && { sec }),
-            ...(sem && { sem }),
+            ...(sem && { sem: parseInt(sem) }),
           }
           batch.update(docRef, updateData)
         })
