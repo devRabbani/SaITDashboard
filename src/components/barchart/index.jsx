@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Chart as ChartJS } from 'chart.js/auto'
 import { Bar, Chart } from 'react-chartjs-2'
 
-export default function Barchart({ data }) {
+export default function Barchart({ data, horizontal }) {
   const [barData, setBarData] = useState({
     labels: data.map((item) => item.teacherName),
     datasets: [
@@ -29,9 +29,11 @@ export default function Barchart({ data }) {
     layout: {
       padding: 20,
     },
+    indexAxis: horizontal ? 'y' : 'x',
+    maintainAspectRatio: horizontal ? false : true,
   }
   return (
-    <div className='chartBg'>
+    <div className="chartBg">
       <Bar data={barData} options={options} />
     </div>
   )
