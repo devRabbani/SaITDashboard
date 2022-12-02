@@ -32,9 +32,9 @@ export default function PrintFile({ rankList, branch, sem }) {
         <div className="page_break" />
         {/* Page 2 */}
         <h3 className="printH3">Bar Chart</h3>
-        <div className="barChart">
-          <Barchart data={rankList} />
-        </div>
+        {/* <div className="barChart"> */}
+        <Barchart horizontal={true} data={rankList} />
+        {/* </div> */}
       </div>
 
       <div className="printWrapper">
